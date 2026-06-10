@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Health Tech Scout | DACH Healthtech Discovery</title>
+    <meta
+      name="description"
+      content="Health Tech Scout is an independent research directory for discovering healthtech companies, use cases, and evidence signals across DACH and Europe."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Health Tech Scout home">
+        <span class="brand-mark">HTS</span>
+        <span>Health Tech Scout</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#companies">Companies</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#pilot">Pilot</a>
+        <a href="#about">About</a>
+      </nav>
+      <a class="header-link" href="https://www.linkedin.com/in/peterscheinsohn" target="_blank" rel="noreferrer">
+        LinkedIn
+      </a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Independent healthtech research directory</p>
+          <h1 id="hero-title">Discover healthtech companies through use cases, market signals, and healthcare data.</h1>
+          <p class="hero-text">
+            Health Tech Scout combines a curated company directory with evidence pilots and healthcare analytics. The
+            goal is simple: reduce search friction for people trying to understand where healthtech solutions create
+            practical value.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#companies">Explore companies</a>
+            <a class="secondary-action" href="#pilot">View evidence pilot</a>
+          </div>
+        </div>
+
+        <aside class="signal-panel" aria-label="Health Tech Scout summary">
+          <div class="panel-topline">
+            <span>Scout map</span>
+            <strong>V0.1</strong>
+          </div>
+          <div class="signal-grid">
+            <div>
+              <b id="companyCount">0</b>
+              <span>companies seeded</span>
+            </div>
+            <div>
+              <b>4</b>
+              <span>market lenses</span>
+            </div>
+            <div>
+              <b>1</b>
+              <span>evidence pilot</span>
+            </div>
+            <div>
+              <b>DACH</b>
+              <span>initial focus</span>
+            </div>
+          </div>
+          <p>
+            Built as a living research asset: every profile should be sourced, dated, and easy for companies to correct.
+          </p>
+        </aside>
+      </section>
+
+      <section class="value-strip" aria-label="Who this helps">
+        <article>
+          <span>For companies</span>
+          <p>Be discoverable by use case and buyer type, not only by brand awareness.</p>
+        </article>
+        <article>
+          <span>For researchers</span>
+          <p>Find structured examples of healthcare problems, workflows, and solution categories.</p>
+        </article>
+        <article>
+          <span>For recruiters</span>
+          <p>See healthcare domain knowledge translated into data, product, and market intelligence work.</p>
+        </article>
+      </section>
+
+      <section class="featured-pilot" aria-labelledby="featured-pilot-title">
+        <div class="featured-copy">
+          <p class="eyebrow">Featured analytics pilot</p>
+          <h2 id="featured-pilot-title">Hospital Discharge Intelligence</h2>
+          <p>
+            Before mapping healthtech companies, Health Tech Scout starts with measurable healthcare burden. This pilot
+            uses 2.05M de-identified hospital discharge records to explore costs, length of stay, payer differences,
+            mortality risk, and provider variation.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="primary-action"
+              href="https://app.powerbi.com/view?r=eyJrIjoiYjk5N2M2NTQtZGMxOC00ZjczLWEyNzgtNTg1MDc3ODk0ZWU3IiwidCI6IjcyYjM0ZmM2LTE1OTctNGRiOC1iYTFlLTA0ZmZlOGQzOTMwOSJ9"
+            >
+              Open Power BI dashboard
+            </a>
+            <a
+              class="secondary-action"
+              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View GitHub case
+            </a>
+          </div>
+        </div>
+        <div class="analytics-proof" aria-label="Hospital discharge pilot metrics">
+          <div>
+            <b>2.05M</b>
+            <span>discharge records</span>
+          </div>
+          <div>
+            <b>202</b>
+            <span>hospitals</span>
+          </div>
+          <div>
+            <b>14</b>
+            <span>analysis fields after cleaning</span>
+          </div>
+          <div>
+            <b>Power BI</b>
+            <span>interactive dashboard</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section companies-section" id="companies" aria-labelledby="companies-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Company scout</p>
+            <h2 id="companies-title">A practical directory, not a ranking.</h2>
+          </div>
+          <p>
+            Profiles are based on public information and written in neutral language. No logos, no endorsement claims,
+            and no medical recommendations.
+          </p>
+        </div>
+
+        <div class="tool-shell">
+          <div class="filters" aria-label="Company filters">
+            <label>
+              <span>Search</span>
+              <input id="companySearch" type="search" placeholder="Company, use case, keyword" />
+            </label>
+            <label>
+              <span>Market lens</span>
+              <select id="lensFilter">
+                <option value="all">All lenses</option>
+              </select>
+            </label>
+            <label>
+              <span>Customer type</span>
+              <select id="audienceFilter">
+                <option value="all">All customer types</option>
+              </select>
+            </label>
+            <label>
+              <span>Maturity</span>
+              <select id="maturityFilter">
+                <option value="all">All maturity levels</option>
+              </select>
+            </label>
+          </div>
+          <p class="filter-note">
+            Market lens shows what kind of solution it is. Customer type shows who primarily adopts, buys, or uses it.
+          </p>
+
+          <div class="results-bar">
+            <span id="resultCount">0 companies</span>
+            <button id="resetFilters" type="button">Reset filters</button>
+          </div>
+
+          <div class="company-grid" id="companyGrid"></div>
+          <p class="empty-state" id="emptyState" hidden>No company profiles match these filters yet.</p>
+        </div>
+      </section>
+
+      <section class="section use-case-section" id="use-cases" aria-labelledby="use-cases-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Use case library</p>
+            <h2 id="use-cases-title">Start from the healthcare problem.</h2>
+          </div>
+          <p>
+            The directory becomes more useful when companies are connected to concrete workflows, stakeholders, and
+            measurable friction.
+          </p>
+        </div>
+        <div class="use-case-grid" id="useCaseGrid"></div>
+      </section>
+
+      <section class="section pilot-section" id="pilot" aria-labelledby="pilot-title">
+        <div class="pilot-copy">
+          <p class="eyebrow">Evidence pilot 01</p>
+          <h2 id="pilot-title">Hospital Discharge Intelligence</h2>
+          <p>
+            A Power BI and Python pilot using 2.05M de-identified New York hospital discharge records to explore cost,
+            length of stay, payer mix, diagnosis groups, and provider-level variation.
+          </p>
+          <p>
+            The pilot shows how public healthcare datasets can surface operational burden and point toward relevant
+            solution areas such as care coordination, hospital analytics, discharge planning, and cost transparency.
+          </p>
+          <div class="pilot-actions">
+            <a
+              class="primary-action"
+              href="https://app.powerbi.com/view?r=eyJrIjoiYjk5N2M2NTQtZGMxOC00ZjczLWEyNzgtNTg1MDc3ODk0ZWU3IiwidCI6IjcyYjM0ZmM2LTE1OTctNGRiOC1iYTFlLTA0ZmZlOGQzOTMwOSJ9"
+            >
+              Open Power BI dashboard
+            </a>
+            <a
+              class="secondary-action"
+              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View GitHub
+            </a>
+            <a
+              class="secondary-action"
+              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project/blob/main/Hospitals_discharges_2021_USA.pdf"
+              target="_blank"
+              rel="noreferrer"
+            >
+              PDF preview
+            </a>
+          </div>
+        </div>
+        <div class="pilot-card">
+          <span>Signals explored</span>
+          <ul>
+            <li>Median costs and charges by diagnosis group</li>
+            <li>Length of stay patterns across clinical areas</li>
+            <li>Payer and severity differences</li>
+            <li>Provider-level heterogeneity</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section roadmap-section" aria-labelledby="roadmap-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Research roadmap</p>
+            <h2 id="roadmap-title">A small product with room to grow.</h2>
+          </div>
+          <p>
+            This roadmap is intentionally flexible and may change as the research focus becomes clearer.
+          </p>
+        </div>
+        <div class="roadmap-grid">
+          <article>
+            <span>Published</span>
+            <h3>Hospital Discharge Intelligence</h3>
+            <p>Healthcare data pilot connecting discharge economics with possible healthtech use cases.</p>
+          </article>
+          <article>
+            <span>Exploring</span>
+            <h3>DACH Healthtech Company Map</h3>
+            <p>Structured profiles by category, buyer, country, clinical area, and evidence signal.</p>
+          </article>
+          <article>
+            <span>Possible track</span>
+            <h3>Use Case Deep Dives</h3>
+            <p>Focused notes on care coordination, telemedicine, patient apps, clinical AI, and hospital software.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section about-section" id="about" aria-labelledby="about-title">
+        <div>
+          <p class="eyebrow">About the author</p>
+          <h2 id="about-title">Built by Peter Scheinsohn, PhD.</h2>
+          <p>
+            I have a background in clinical trials and healthcare research, and I am building a data analytics portfolio
+            focused on healthtech, real-world evidence, and practical market intelligence.
+          </p>
+        </div>
+        <div class="contact-panel">
+          <h3>Company updates</h3>
+          <p>
+            Want to add a company, correct a profile, or suggest a use case? Send a short note with public sources.
+          </p>
+          <a href="mailto:peter.scheinsohn@gmail.com">peter.scheinsohn@gmail.com</a>
+        </div>
+      </section>
+
+      <section class="disclaimer" aria-label="Independent directory disclaimer">
+        <p>
+          Health Tech Scout is an independent research project. Company profiles are based on publicly available
+          information and do not imply partnership, endorsement, certification, or medical advice. Please verify details
+          with the official company sources before making decisions.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Health Tech Scout</span>
+      <span>Independent research directory · DACH / Europe</span>
+    </footer>
+
+    <script src="script.js?v=customer-type-filter"></script>
+  </body>
+</html>
