@@ -1,251 +1,296 @@
-const companies = [
+const profiles = [
   {
-    name: "Ada Health",
-    country: "Germany",
-    lens: "Clinical AI & Triage",
-    audience: "Patients, providers, payers",
-    customerType: "Patients",
-    maturity: "Scaleup",
-    useCase: "Symptom assessment and care navigation",
-    description:
-      "Berlin-founded health technology company focused on intelligent symptom assessment, medical content, and digital-first care guidance.",
-    tags: ["AI", "Triage", "Patient access"],
-    source: "https://ada.com/",
-    checked: "June 2026",
-  },
-  {
-    name: "Kaia Health",
-    country: "Germany / US",
+    name: "Mindable: Panic & Agoraphobia",
+    manufacturer: "Mindable Health GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
     lens: "Digital Therapeutics",
-    audience: "Employers, health plans, patients",
-    customerType: "Payers / employers",
-    maturity: "Scaleup",
-    useCase: "Digital musculoskeletal care",
-    description:
-      "Digital-first care provider focused on joint and muscle pain, with programs positioned for employers, health plans, and individuals.",
-    tags: ["MSK", "Remote care", "Outcomes"],
-    source: "https://kaiahealth.com/",
-    checked: "June 2026",
-  },
-  {
-    name: "Temedica",
-    country: "Germany",
-    lens: "Real-World Evidence",
-    audience: "Pharma, medical, commercial teams",
-    customerType: "Pharma",
-    maturity: "Growth",
-    useCase: "Health insights and omnichannel engagement",
-    description:
-      "Munich-based company combining real-world insights, AI-enabled analytics, and compliant engagement solutions for pharma teams.",
-    tags: ["RWE", "Pharma", "Patient journey"],
-    source: "https://temedica.com/",
-    checked: "June 2026",
-  },
-  {
-    name: "Doctolib",
-    country: "France / Germany",
-    lens: "Care Access",
-    audience: "Patients, providers",
-    customerType: "Providers",
-    maturity: "Established",
-    useCase: "Appointment booking and provider access",
-    description:
-      "European healthcare access platform known for online appointment booking and digital tools connecting patients with care providers.",
-    tags: ["Access", "Scheduling", "Provider software"],
-    source: "https://www.doctolib.de/",
-    checked: "June 2026",
-  },
-  {
-    name: "TeleClinic",
-    country: "Germany",
-    lens: "Telemedicine",
-    audience: "Patients, physicians, insurers",
+    audience: "Patients, physicians",
     customerType: "Patients",
-    maturity: "Established",
-    useCase: "Online doctor consultations",
+    useCase: "Prescription-oriented support for panic disorder and agoraphobia.",
     description:
-      "German telemedicine service offering digital access to physicians, video consultations, and related documents such as prescriptions or sick notes where appropriate.",
-    tags: ["Telemedicine", "ePrescription", "Access"],
-    source: "https://www.teleclinic.com/",
-    checked: "June 2026",
+      "A DiGA profile that helps map the mental-health segment of Germany's regulated digital therapeutics market.",
+    tags: ["Mental health", "Anxiety", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/00329",
+    checked: "BfArM registry",
   },
   {
-    name: "Caspar Health",
-    country: "Germany",
-    lens: "Rehabilitation & Aftercare",
-    audience: "Clinics, therapists, patients",
-    customerType: "Providers",
-    maturity: "Growth",
-    useCase: "Digital rehabilitation and aftercare",
-    description:
-      "Berlin-based digital health company offering software and care models for prevention, rehabilitation, and aftercare workflows.",
-    tags: ["Rehab", "Clinic workflow", "Patient support"],
-    source: "https://www.caspar-health.com/",
-    checked: "June 2026",
-  },
-  {
-    name: "Mindable Health",
-    country: "Germany",
+    name: "Kaia Back Pain",
+    manufacturer: "kaia health software GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
     lens: "Digital Therapeutics",
-    audience: "Patients, healthcare professionals",
+    audience: "Patients, physicians, payers",
     customerType: "Patients",
-    maturity: "Growth",
-    useCase: "Digital anxiety disorder support",
+    useCase: "Digital back pain training and self-management.",
     description:
-      "Digital mental health company offering apps for panic disorder, agoraphobia, and social anxiety, with a prescription-oriented model in Germany.",
-    tags: ["Mental health", "DiGA", "Anxiety"],
-    source: "https://www.mindable.health/",
-    checked: "June 2026",
+      "A musculoskeletal DiGA example showing how software-based interventions can support high-burden chronic care areas.",
+    tags: ["MSK", "Pain", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/01330",
+    checked: "BfArM registry",
+  },
+  {
+    name: "Oviva Direkt for Obesity",
+    manufacturer: "Oviva AG, German branch",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
+    lens: "Metabolic Health",
+    audience: "Patients, physicians, payers",
+    customerType: "Patients",
+    useCase: "Digital support for obesity care and behavior change.",
+    description:
+      "A DiGA profile in metabolic care, useful for scouting reimbursement-backed digital interventions for chronic conditions.",
+    tags: ["Obesity", "Lifestyle", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/00872",
+    checked: "BfArM registry",
+  },
+  {
+    name: "HelloBetter Diabetes",
+    manufacturer: "GET.ON Institut fuer Online Gesundheitstrainings GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
+    lens: "Metabolic Health",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital psychological support in diabetes care.",
+    description:
+      "A chronic-care DiGA example where behavioral health, metabolic disease, and digital treatment support overlap.",
+    tags: ["Diabetes", "Behavioral health", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/01376",
+    checked: "BfArM registry",
+  },
+  {
+    name: "Selfapy Online Course for Depression",
+    manufacturer: "Selfapy GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
+    lens: "Digital Therapeutics",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital mental health support for depressive disorders.",
+    description:
+      "A mental-health DiGA profile that makes evidence, access, and reimbursement questions visible in one market segment.",
+    tags: ["Depression", "Mental health", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/00876",
+    checked: "BfArM registry",
+  },
+  {
+    name: "Kranus Edera",
+    manufacturer: "Kranus Health GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
+    lens: "Urology & Men's Health",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital support for erectile dysfunction care.",
+    description:
+      "A regulated digital health example in urology, useful for understanding condition-specific DiGA positioning.",
+    tags: ["Urology", "Men's health", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/01282",
+    checked: "BfArM registry",
+  },
+  {
+    name: "Endo-App",
+    manufacturer: "Endo Health GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
+    lens: "Women's Health",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital support for endometriosis.",
+    description:
+      "A women's-health DiGA profile showing how regulated apps can target care gaps around chronic and under-served conditions.",
+    tags: ["Endometriosis", "Women's health", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/01734",
+    checked: "BfArM registry",
+  },
+  {
+    name: "Invirto",
+    manufacturer: "Sympatient GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
+    lens: "Digital Therapeutics",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital therapy support for anxiety disorders.",
+    description:
+      "A DiGA profile useful for comparing mental-health approaches, target indications, and patient-facing delivery models.",
+    tags: ["Anxiety", "VR support", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/00300",
+    checked: "BfArM registry",
+  },
+  {
+    name: "PINK! Coach",
+    manufacturer: "PINK gegen Brustkrebs GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
+    lens: "Oncology Support",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital support for people affected by breast cancer.",
+    description:
+      "An oncology-support DiGA profile that connects patient education, daily support, and regulated app reimbursement.",
+    tags: ["Oncology", "Breast cancer", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/01464",
+    checked: "BfArM registry",
+  },
+  {
+    name: "ProHerz",
+    manufacturer: "ProCarement GmbH",
+    track: "DiGA (BfArM)",
+    status: "Listed DiGA",
+    lens: "Cardiometabolic Care",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital support in heart failure-related care.",
+    description:
+      "A DiGA profile that points toward demand for remote support, chronic-care pathways, and cardiology-adjacent services.",
+    tags: ["Cardiology", "Chronic care", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/01823",
+    checked: "BfArM registry",
+  },
+  {
+    name: "eCovery Lower Back Pain",
+    manufacturer: "eCovery GmbH",
+    track: "DiGA (BfArM)",
+    status: "Preliminary DiGA",
+    lens: "Digital Therapeutics",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital therapy support for lower back pain.",
+    description:
+      "A preliminary DiGA profile included to show that the scout can track new regulated applications as the market develops.",
+    tags: ["MSK", "Preliminary", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/02173",
+    checked: "BfArM registry",
+  },
+  {
+    name: "memodio",
+    manufacturer: "memodio GmbH",
+    track: "DiGA (BfArM)",
+    status: "Preliminary DiGA",
+    lens: "Neurology & Cognition",
+    audience: "Patients, physicians",
+    customerType: "Patients",
+    useCase: "Digital support in cognitive health.",
+    description:
+      "A preliminary DiGA example that helps monitor where future regulated digital health applications may expand.",
+    tags: ["Cognition", "Preliminary", "BfArM"],
+    source: "https://diga.bfarm.de/de/verzeichnis/02866",
+    checked: "BfArM registry",
   },
   {
     name: "coobi",
-    country: "Germany / DACH",
-    lens: "Digital Therapeutics",
+    manufacturer: "Cubic Zircalloy GmbH",
+    track: "Adjacent healthtech",
+    status: "Non-DiGA context",
+    lens: "Addiction Care & Aftercare",
     audience: "Patients, clinics, therapists",
     customerType: "Providers",
-    maturity: "Growth",
-    useCase: "Digital addiction treatment and recovery support",
+    useCase: "Digital addiction treatment and recovery support.",
     description:
-      "Digital health company offering coobi care for people affected by addiction disorders and coobi clinic for therapy, rehabilitation, aftercare, and patient monitoring workflows.",
-    tags: ["Addiction care", "Aftercare", "Patient monitoring"],
+      "Adjacent digital health company included as a practical example around therapy, rehabilitation, aftercare, and patient monitoring workflows.",
+    tags: ["Addiction care", "Aftercare", "Monitoring"],
     source: "https://coobi.health/de",
-    checked: "June 2026",
+    checked: "Public source",
   },
   {
     name: "AMBOSS",
-    country: "Germany",
-    lens: "Clinical Knowledge & AI",
-    audience: "Clinicians, nurses, students, institutions",
+    manufacturer: "AMBOSS GmbH",
+    track: "Adjacent healthtech",
+    status: "Non-DiGA context",
+    lens: "Clinical Knowledge",
+    audience: "Clinicians, students, institutions",
     customerType: "Clinical teams",
-    maturity: "Established",
-    useCase: "Medical knowledge and clinical decision support",
+    useCase: "Medical knowledge and clinical decision support.",
     description:
-      "Digital medical knowledge platform for clinicians, nurses, students, practices, and institutions, with AI-supported features positioned for medical learning and practice.",
+      "Adjacent healthtech profile showing the professional knowledge layer around digital healthcare delivery.",
     tags: ["Clinical knowledge", "Education", "AI support"],
     source: "https://www.amboss.com/de",
-    checked: "June 2026",
+    checked: "Public source",
   },
   {
     name: "m.Doc",
-    country: "Germany",
-    lens: "Hospital Workflow & Patient Portal",
+    manufacturer: "m.Doc GmbH",
+    track: "Adjacent healthtech",
+    status: "Non-DiGA context",
+    lens: "Hospital Workflow",
     audience: "Hospitals, clinics, patients",
     customerType: "Providers",
-    maturity: "Established",
-    useCase: "Patient portal and cross-sector care communication",
+    useCase: "Patient portal and cross-sector care communication.",
     description:
-      "Patient portal provider focused on digital patient communication before, during, and after hospital care, including integration with hospital information systems.",
+      "Adjacent provider software profile that connects the DiGA market to hospital, patient portal, and care-navigation workflows.",
     tags: ["Patient portal", "Hospital workflow", "Interoperability"],
     source: "https://www.mdoc.one/en/",
-    checked: "June 2026",
+    checked: "Public source",
   },
   {
-    name: "samedi",
-    country: "Germany",
-    lens: "Practice & Clinic Software",
-    audience: "Practices, MVZs, hospitals",
-    customerType: "Providers",
-    maturity: "Established",
-    useCase: "Appointment management and patient workflow automation",
+    name: "Temedica",
+    manufacturer: "Temedica GmbH",
+    track: "Adjacent healthtech",
+    status: "Non-DiGA context",
+    lens: "Real-World Evidence",
+    audience: "Pharma, medical, commercial teams",
+    customerType: "Pharma",
+    useCase: "Health insights and patient journey analytics.",
     description:
-      "Software for practices, medical care centers, and clinics covering online appointment booking, resource planning, patient communication, digital forms, and video consultation workflows.",
-    tags: ["Scheduling", "Patient communication", "Clinic operations"],
-    source: "https://www.samedi.com/",
-    checked: "June 2026",
+      "Adjacent data and evidence profile showing how real-world insights can complement regulated digital health market research.",
+    tags: ["RWE", "Pharma", "Patient journey"],
+    source: "https://temedica.com/",
+    checked: "Public source",
   },
   {
     name: "Famedly",
-    country: "Germany",
+    manufacturer: "Famedly GmbH",
+    track: "Adjacent healthtech",
+    status: "Non-DiGA context",
     lens: "Health IT Infrastructure",
-    audience: "Hospitals, clinics, care providers, pharmacies",
+    audience: "Hospitals, practices, care providers",
     customerType: "Providers",
-    maturity: "Growth",
-    useCase: "Secure healthcare messaging",
+    useCase: "Secure healthcare messaging and team communication.",
     description:
-      "TI messenger provider for secure and integrated communication across healthcare teams, hospitals, clinics, care services, practices, and pharmacies.",
+      "Adjacent infrastructure profile included to show how communication and interoperability shape digital healthcare adoption.",
     tags: ["TI messenger", "Secure communication", "Interoperability"],
     source: "https://www.famedly.com/",
-    checked: "June 2026",
-  },
-  {
-    name: "Nelly",
-    country: "Germany",
-    lens: "Practice Operations",
-    audience: "Medical and dental practices",
-    customerType: "Providers",
-    maturity: "Growth",
-    useCase: "Digital patient journey and practice administration",
-    description:
-      "Practice automation platform covering digital patient intake, document signing, payment workflows, billing support, and administrative process automation.",
-    tags: ["Patient intake", "Billing", "Practice automation"],
-    source: "https://www.getnelly.de/",
-    checked: "June 2026",
-  },
-  {
-    name: "XO Life",
-    country: "Germany",
-    lens: "Patient Support & Real-World Data",
-    audience: "Pharma, patients, experts",
-    customerType: "Pharma",
-    maturity: "Growth",
-    useCase: "Digital product and treatment support",
-    description:
-      "Digital platform connecting pharma and patients through treatment support, educational content, patient-reported insights, and pharmacovigilance-oriented workflows.",
-    tags: ["Patient support", "Pharma", "PRO data"],
-    source: "https://www.xo-life.com/",
-    checked: "June 2026",
-  },
-  {
-    name: "Climedo",
-    country: "Germany",
-    lens: "Clinical Research Software",
-    audience: "Medtech, pharma, clinical teams",
-    customerType: "Clinical teams",
-    maturity: "Growth",
-    useCase: "Digital clinical data capture",
-    description:
-      "Clinical data and evidence platform category entry reserved for a sourced profile covering ePRO, registries, and post-market evidence workflows.",
-    tags: ["Clinical trials", "ePRO", "Evidence"],
-    source: "https://www.climedo.com/",
-    checked: "Needs final verification",
+    checked: "Public source",
   },
 ];
 
 const useCases = [
   {
-    title: "Care Access & Navigation",
-    lens: "Patient access",
+    title: "Mental Health DiGA",
+    lens: "High-activity segment",
     description:
-      "Tools that help people find the right care channel, book appointments, understand urgency, or reach clinicians remotely.",
-    examples: ["Doctolib", "TeleClinic", "Ada Health", "samedi"],
+      "Applications for depression, anxiety, panic, sleep, stress, and related conditions. This is one of the clearest DiGA scouting areas.",
+    examples: ["Mindable", "Selfapy", "Invirto", "HelloBetter"],
   },
   {
-    title: "Digital Therapeutics",
-    lens: "Treatment support",
+    title: "MSK & Rehabilitation",
+    lens: "Burden reduction",
     description:
-      "Software-based interventions for defined conditions, often combining education, exercises, monitoring, and behavioral support.",
-    examples: ["Kaia Health", "Mindable Health", "coobi"],
+      "Digital therapeutics and exercise-oriented support for back pain, joint conditions, rehabilitation, and chronic musculoskeletal burden.",
+    examples: ["Kaia", "eCovery", "Vivira", "Mawendo"],
   },
   {
-    title: "Hospital Workflow & Aftercare",
-    lens: "Provider operations",
+    title: "Chronic & Metabolic Care",
+    lens: "Long-term support",
     description:
-      "Solutions that reduce operational friction around discharge, rehabilitation, documentation, monitoring, and capacity pressure.",
-    examples: ["Caspar Health", "m.Doc", "Famedly", "Nelly"],
+      "DiGA products and adjacent solutions around obesity, diabetes, cardiology, and behavior change in chronic-care pathways.",
+    examples: ["Oviva", "HelloBetter Diabetes", "ProHerz", "Vitadio"],
   },
   {
-    title: "Real-World Evidence",
-    lens: "Data intelligence",
+    title: "Specialized Care Areas",
+    lens: "Condition-specific markets",
     description:
-      "Platforms and analytics that transform healthcare data into evidence about patient journeys, burden, outcomes, and market needs.",
-    examples: ["Temedica", "Climedo", "XO Life"],
+      "Focused regulated applications in women's health, oncology support, urology, neurology, tinnitus, and other indication-specific needs.",
+    examples: ["Endo-App", "PINK! Coach", "Kranus", "memodio"],
   },
   {
-    title: "Clinical Knowledge & Decision Support",
-    lens: "Clinical intelligence",
+    title: "Adjacent Digital Health",
+    lens: "Market context",
     description:
-      "Products that support healthcare professionals with structured medical knowledge, education, workflow context, and decision support.",
-    examples: ["AMBOSS"],
+      "Non-DiGA companies that help explain the wider ecosystem around access, provider workflows, clinical knowledge, infrastructure, and evidence.",
+    examples: ["coobi", "m.Doc", "AMBOSS", "Temedica"],
   },
 ];
 
@@ -254,14 +299,13 @@ const useCaseGrid = document.querySelector("#useCaseGrid");
 const companySearch = document.querySelector("#companySearch");
 const lensFilter = document.querySelector("#lensFilter");
 const audienceFilter = document.querySelector("#audienceFilter");
-const maturityFilter = document.querySelector("#maturityFilter");
+const trackFilter = document.querySelector("#trackFilter");
 const resultCount = document.querySelector("#resultCount");
-const companyCount = document.querySelector("#companyCount");
 const resetFilters = document.querySelector("#resetFilters");
 const emptyState = document.querySelector("#emptyState");
 
 function uniqueValues(key) {
-  return [...new Set(companies.map((company) => company[key]))].sort();
+  return [...new Set(profiles.map((profile) => profile[key]))].sort();
 }
 
 function addOptions(select, values) {
@@ -273,17 +317,18 @@ function addOptions(select, values) {
   });
 }
 
-function matchesCompany(company, query) {
+function matchesProfile(profile, query) {
   const text = [
-    company.name,
-    company.country,
-    company.lens,
-    company.audience,
-    company.customerType,
-    company.maturity,
-    company.useCase,
-    company.description,
-    company.tags.join(" "),
+    profile.name,
+    profile.manufacturer,
+    profile.track,
+    profile.status,
+    profile.lens,
+    profile.audience,
+    profile.customerType,
+    profile.useCase,
+    profile.description,
+    profile.tags.join(" "),
   ]
     .join(" ")
     .toLowerCase();
@@ -291,48 +336,45 @@ function matchesCompany(company, query) {
   return text.includes(query);
 }
 
-function pluralizeCompanies(count) {
-  return count === 1 ? "1 company" : `${count} companies`;
-}
-
-function renderCompanies() {
+function renderProfiles() {
   const query = companySearch.value.trim().toLowerCase();
   const lens = lensFilter.value;
   const audience = audienceFilter.value;
-  const maturity = maturityFilter.value;
+  const track = trackFilter.value;
 
-  const visible = companies.filter((company) => {
-    const lensMatch = lens === "all" || company.lens === lens;
-    const audienceMatch = audience === "all" || company.customerType === audience;
-    const maturityMatch = maturity === "all" || company.maturity === maturity;
-    const queryMatch = query === "" || matchesCompany(company, query);
-    return lensMatch && audienceMatch && maturityMatch && queryMatch;
+  const visible = profiles.filter((profile) => {
+    const lensMatch = lens === "all" || profile.lens === lens;
+    const audienceMatch = audience === "all" || profile.customerType === audience;
+    const trackMatch = track === "all" || profile.track === track;
+    const queryMatch = query === "" || matchesProfile(profile, query);
+    return lensMatch && audienceMatch && trackMatch && queryMatch;
   });
 
   companyGrid.innerHTML = visible
     .map(
-      (company) => `
+      (profile) => `
         <article class="company-card">
           <div>
-            <p class="company-meta">${company.country} · ${company.maturity}</p>
-            <h3>${company.name}</h3>
-            <p><strong>${company.useCase}</strong></p>
-            <p>${company.description}</p>
+            <p class="company-meta">${profile.track} · ${profile.status}</p>
+            <h3>${profile.name}</h3>
+            <p class="manufacturer">${profile.manufacturer}</p>
+            <p><strong>${profile.useCase}</strong></p>
+            <p>${profile.description}</p>
             <div class="tag-row">
-              <span class="tag">${company.lens}</span>
-              ${company.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}
+              <span class="tag">${profile.lens}</span>
+              ${profile.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}
             </div>
           </div>
           <div class="company-footer">
-            <span class="company-source">Checked: ${company.checked}</span>
-            <a href="${company.source}" target="_blank" rel="noreferrer">Source</a>
+            <span class="company-source">${profile.checked}</span>
+            <a href="${profile.source}" target="_blank" rel="noreferrer">Source</a>
           </div>
         </article>
       `
     )
     .join("");
 
-  resultCount.textContent = pluralizeCompanies(visible.length);
+  resultCount.textContent = visible.length === profiles.length ? "Selected profiles" : "Filtered profiles";
   emptyState.hidden = visible.length > 0;
 }
 
@@ -357,20 +399,19 @@ function resetAllFilters() {
   companySearch.value = "";
   lensFilter.value = "all";
   audienceFilter.value = "all";
-  maturityFilter.value = "all";
-  renderCompanies();
+  trackFilter.value = "all";
+  renderProfiles();
 }
 
 addOptions(lensFilter, uniqueValues("lens"));
 addOptions(audienceFilter, uniqueValues("customerType"));
-addOptions(maturityFilter, uniqueValues("maturity"));
+addOptions(trackFilter, uniqueValues("track"));
 
-companyCount.textContent = companies.length;
 renderUseCases();
-renderCompanies();
+renderProfiles();
 
-[companySearch, lensFilter, audienceFilter, maturityFilter].forEach((control) => {
-  control.addEventListener("input", renderCompanies);
+[companySearch, lensFilter, audienceFilter, trackFilter].forEach((control) => {
+  control.addEventListener("input", renderProfiles);
 });
 
 resetFilters.addEventListener("click", resetAllFilters);
