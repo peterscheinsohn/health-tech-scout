@@ -6,71 +6,79 @@
     <title>Health Tech Scout | DiGA & Digital Health Market Intelligence</title>
     <meta
       name="description"
-      content="Health Tech Scout is an independent DiGA-first research directory based on official BfArM registry signals, adjacent digital health companies, and healthcare analytics pilots."
+      content="Health Tech Scout is an independent DiGA-first research directory based on official BfArM registry signals, manufacturer websites, and healthcare analytics work."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Health Tech Scout home">
-        <span class="brand-mark">HTS</span>
+        <img class="brand-mark" src="assets/hts-scout-logo.svg" alt="" aria-hidden="true" />
         <span>Health Tech Scout</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
         <a href="#companies">DiGA Scout</a>
-        <a href="#use-cases">Use Cases</a>
-        <a href="#pilot">Pilot</a>
+        <a href="#care-areas">Care Areas</a>
+        <a href="analytics-project.html">Healthcare Analytics</a>
         <a href="#about">About</a>
       </nav>
       <a class="header-link" href="https://www.linkedin.com/in/peterscheinsohn" target="_blank" rel="noreferrer">
         LinkedIn
       </a>
+      <div class="language-switch" aria-label="Language availability">
+        <span>EN</span>
+        <span>DE planned</span>
+      </div>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Independent DiGA-first healthtech scout</p>
-          <h1 id="hero-title">Map Germany's DiGA market through use cases, evidence signals, and healthcare data.</h1>
+          <p class="eyebrow">DiGA market intelligence</p>
+          <h1 id="hero-title">Germany's DiGA landscape.</h1>
           <p class="hero-text">
-            Health Tech Scout starts with the official BfArM DiGA registry and adds a practical market-intelligence
-            layer: what the applications do, which care problems they address, and where adjacent digital health
-            companies fit around the DiGA ecosystem.
+            Health Tech Scout tracks regulated digital health applications listed by BfArM and connects them with
+            public manufacturer information, indication areas, and practical market context.
           </p>
           <div class="hero-actions">
-            <a class="primary-action" href="#companies">Explore DiGA scout</a>
-            <a class="secondary-action" href="#pilot">View evidence pilot</a>
+            <a class="primary-action" href="#companies">Open DiGA scout</a>
+            <a class="secondary-action" href="analytics-project.html">Healthcare analytics</a>
           </div>
-          <p class="language-note">English first. A German version can be added once the structure is stable.</p>
+          <div class="context-links" aria-label="DiGA context links">
+            <a href="https://www.digitalversorgt.de/themen/diga" target="_blank" rel="noreferrer">
+              DiGA explained <span>DE</span>
+            </a>
+            <a href="https://diga.bfarm.de/de/verzeichnis" target="_blank" rel="noreferrer">
+              BfArM registry <span>DE</span>
+            </a>
+            <a href="https://diga.bfarm.de/de/diga-hersteller" target="_blank" rel="noreferrer">
+              For manufacturers <span>DE</span>
+            </a>
+          </div>
         </div>
 
         <aside class="signal-panel" aria-label="Health Tech Scout summary">
           <div class="panel-topline">
-            <span>Scout focus</span>
-            <strong>V0.2</strong>
+            <span>Quick paths</span>
           </div>
           <div class="signal-grid">
-            <div>
-              <b>BfArM</b>
-              <span>official registry source</span>
-            </div>
-            <div>
-              <b>DiGA</b>
-              <span>primary market vertical</span>
-            </div>
-            <div>
-              <b>BI</b>
-              <span>evidence pilot</span>
-            </div>
-            <div>
-              <b>DE</b>
-              <span>German market context</span>
-            </div>
+            <a class="signal-tile" href="https://diga.bfarm.de/de/verzeichnis" target="_blank" rel="noreferrer">
+              <b>BfArM registry</b>
+              <span>official DiGA source</span>
+            </a>
+            <a class="signal-tile" href="#companies" data-status-filter="Listed DiGA">
+              <b>Listed DiGA</b>
+              <span>regulated applications</span>
+            </a>
+            <a class="signal-tile" href="#companies" data-status-filter="Preliminary DiGA">
+              <b>Preliminary DiGA</b>
+              <span>temporary listing status</span>
+            </a>
+            <a class="signal-tile" href="analytics-project.html">
+              <b>Healthcare Analytics</b>
+              <span>Hospital Discharge Intelligence</span>
+            </a>
           </div>
-          <p>
-            Built as a living research asset: BfArM-based DiGA profiles first, then adjacent healthtech companies where
-            they help explain the wider market.
-          </p>
         </aside>
       </section>
 
@@ -81,7 +89,7 @@
         </article>
         <article>
           <span>For market teams</span>
-          <p>Use one structured view to compare DiGA applications, manufacturers, and adjacent players.</p>
+          <p>Use one structured view to compare DiGA applications by indication area, manufacturer, and listing status.</p>
         </article>
         <article>
           <span>For recruiters</span>
@@ -89,92 +97,45 @@
         </article>
       </section>
 
-      <section class="featured-pilot" aria-labelledby="featured-pilot-title">
-        <div class="featured-copy">
-          <p class="eyebrow">Featured analytics pilot</p>
-          <h2 id="featured-pilot-title">Hospital Discharge Intelligence</h2>
-          <p>
-            The DiGA scout focuses on digital health solutions. This separate analytics pilot shows the data side: how
-            public healthcare datasets can be used to understand cost, utilization, severity, and provider variation.
-          </p>
-          <div class="hero-actions">
-            <a
-              class="primary-action"
-              href="https://app.powerbi.com/view?r=eyJrIjoiYjk5N2M2NTQtZGMxOC00ZjczLWEyNzgtNTg1MDc3ODk0ZWU3IiwidCI6IjcyYjM0ZmM2LTE1OTctNGRiOC1iYTFlLTA0ZmZlOGQzOTMwOSJ9"
-            >
-              Open Power BI dashboard
-            </a>
-            <a
-              class="secondary-action"
-              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project"
-              target="_blank"
-              rel="noreferrer"
-            >
-              View GitHub case
-            </a>
-          </div>
-        </div>
-        <div class="analytics-proof" aria-label="Hospital discharge pilot metrics">
-          <div>
-            <b>2.05M</b>
-            <span>discharge records</span>
-          </div>
-          <div>
-            <b>202</b>
-            <span>hospitals</span>
-          </div>
-          <div>
-            <b>14</b>
-            <span>analysis fields after cleaning</span>
-          </div>
-          <div>
-            <b>Power BI</b>
-            <span>interactive dashboard</span>
-          </div>
-        </div>
-      </section>
-
       <section class="section companies-section" id="companies" aria-labelledby="companies-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">BfArM-based DiGA scout</p>
-            <h2 id="companies-title">A practical market map, not a ranking.</h2>
+            <p class="eyebrow">DiGA scout</p>
+            <h2 id="companies-title">Regulated digital health applications.</h2>
           </div>
           <p>
-            DiGA profiles are oriented around the official BfArM registry. Adjacent healthtech companies are kept
-            separate, so the site can show both the regulated DiGA market and the wider digital health context.
+            Profiles focus on DiGA applications listed in the public BfArM directory. Non-DiGA companies are kept out of
+            this scout view.
           </p>
         </div>
 
         <div class="tool-shell">
           <div class="filters" aria-label="Scout filters">
             <label>
-              <span>Search</span>
-              <input id="companySearch" type="search" placeholder="Application, manufacturer, use case" />
+              <span>Find profile</span>
+              <input id="companySearch" type="search" placeholder="App, manufacturer, condition, use case" />
             </label>
             <label>
-              <span>Market lens</span>
+              <span>Indication area</span>
               <select id="lensFilter">
-                <option value="all">All lenses</option>
+                <option value="all">All indication areas</option>
               </select>
             </label>
             <label>
-              <span>Customer type</span>
-              <select id="audienceFilter">
-                <option value="all">All customer types</option>
-              </select>
-            </label>
-            <label>
-              <span>Track</span>
-              <select id="trackFilter">
-                <option value="all">All tracks</option>
+              <span>Status</span>
+              <select id="statusFilter">
+                <option value="all">All statuses</option>
               </select>
             </label>
           </div>
           <p class="filter-note">
-            DiGA entries are based on the official BfArM registry. Adjacent entries are included only when they help map
-            the surrounding digital health market.
+            Search by name or topic, then narrow the DiGA view by care area and listing status.
           </p>
+          <div class="status-guide" aria-label="DiGA status guide">
+            <span>Status guide</span>
+            <p><strong>Listed DiGA</strong> is available in the official DiGA directory.</p>
+            <p><strong>Preliminary DiGA</strong> is temporarily listed while further evidence is completed.</p>
+          </div>
 
           <div class="results-bar">
             <span id="resultCount">Selected profiles</span>
@@ -186,66 +147,18 @@
         </div>
       </section>
 
-      <section class="section use-case-section" id="use-cases" aria-labelledby="use-cases-title">
+      <section class="section use-case-section" id="care-areas" aria-labelledby="care-areas-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Use case library</p>
-            <h2 id="use-cases-title">Start from the regulated care problem.</h2>
+            <p class="eyebrow">Care areas</p>
+            <h2 id="care-areas-title">Where DiGA is already active.</h2>
           </div>
           <p>
-            DiGA becomes useful to scout when products are connected to clinical areas, evidence expectations,
-            reimbursement logic, and adjacent care workflows.
+            A quick view of care fields where regulated digital health applications are already used, from mental
+            health to metabolic and rehabilitation support.
           </p>
         </div>
         <div class="use-case-grid" id="useCaseGrid"></div>
-      </section>
-
-      <section class="section pilot-section" id="pilot" aria-labelledby="pilot-title">
-        <div class="pilot-copy">
-          <p class="eyebrow">Evidence pilot 01</p>
-          <h2 id="pilot-title">Hospital Discharge Intelligence</h2>
-          <p>
-            A Power BI and Python pilot using de-identified New York hospital discharge records to explore cost, length
-            of stay, payer mix, diagnosis groups, and provider-level variation.
-          </p>
-          <p>
-            The pilot shows how public healthcare datasets can surface operational burden and point toward relevant
-            solution areas such as care coordination, hospital analytics, discharge planning, and cost transparency.
-          </p>
-          <div class="pilot-actions">
-            <a
-              class="primary-action"
-              href="https://app.powerbi.com/view?r=eyJrIjoiYjk5N2M2NTQtZGMxOC00ZjczLWEyNzgtNTg1MDc3ODk0ZWU3IiwidCI6IjcyYjM0ZmM2LTE1OTctNGRiOC1iYTFlLTA0ZmZlOGQzOTMwOSJ9"
-            >
-              Open Power BI dashboard
-            </a>
-            <a
-              class="secondary-action"
-              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project"
-              target="_blank"
-              rel="noreferrer"
-            >
-              View GitHub
-            </a>
-            <a
-              class="secondary-action"
-              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project/blob/main/Hospitals_discharges_2021_USA.pdf"
-              target="_blank"
-              rel="noreferrer"
-            >
-              PDF preview
-            </a>
-          </div>
-        </div>
-        <div class="pilot-card">
-          <span>Signals explored</span>
-          <ul>
-            <li>Median costs and charges by diagnosis group</li>
-            <li>Length of stay patterns across clinical areas</li>
-            <li>Payer and severity differences</li>
-            <li>Provider-level heterogeneity</li>
-          </ul>
-        </div>
       </section>
 
       <section class="section roadmap-section" aria-labelledby="roadmap-title">
@@ -260,7 +173,10 @@
           <article>
             <span>Published</span>
             <h3>Hospital Discharge Intelligence</h3>
-            <p>Healthcare data pilot showing the analytics layer behind the broader scout project.</p>
+            <p>
+              Standalone healthcare data project.
+              <a href="analytics-project.html">View project</a>
+            </p>
           </article>
           <article>
             <span>Exploring</span>
@@ -268,46 +184,75 @@
             <p>BfArM-based profiles by clinical area, application type, manufacturer, status, and use case.</p>
           </article>
           <article>
-            <span>Possible track</span>
+            <span>Later</span>
             <h3>Adjacent Healthtech Layer</h3>
-            <p>Selected non-DiGA companies that explain market context around access, infrastructure, and data.</p>
+            <p>A separate non-DiGA view can explain market context around access, infrastructure, and data.</p>
           </article>
         </div>
       </section>
 
       <section class="section about-section" id="about" aria-labelledby="about-title">
-        <div>
-          <p class="eyebrow">About the author</p>
-          <h2 id="about-title">Built by Peter Scheinsohn, PhD.</h2>
-          <p>
-            I have a background in clinical trials and healthcare research, and I am building a data analytics portfolio
-            focused on DiGA, healthtech market intelligence, real-world evidence, and practical healthcare analytics.
-          </p>
+        <div class="about-author">
+          <figure class="author-photo">
+            <img src="assets/peter-scheinsohn.jpg" alt="Peter Scheinsohn" />
+          </figure>
+          <div class="about-copy">
+            <p class="eyebrow">About the author</p>
+            <h2 id="about-title">Built by Peter Scheinsohn, PhD.</h2>
+            <div class="profile-facts" aria-label="Professional highlights">
+              <span><strong>10+</strong> years in regulated data</span>
+              <span><strong>Life sciences</strong> clinical research, drug safety, pharma consulting</span>
+              <span><strong>Analytics</strong> SQL, Python, Power BI, Tableau</span>
+            </div>
+            <p>
+              I am a Data Analyst with 10+ years of experience working with complex, regulated data across healthcare,
+              pharmacovigilance, clinical research, pharmaceutical consulting, and big tech operations. My strength is
+              turning messy operational, healthcare, and compliance data into reliable dashboards, KPIs, and
+              decision-ready insights.
+            </p>
+            <p>
+              I combine life-sciences domain expertise with modern analytics tools including SQL, Python, Power BI,
+              Tableau, Metabase, BigQuery, dbt, Fivetran, and PostgreSQL.
+            </p>
+          </div>
         </div>
         <div class="contact-panel">
-          <h3>Profile updates</h3>
+          <h3>Stay updated</h3>
           <p>
-            Want to suggest a DiGA profile, correct a public-source detail, or add an adjacent company? Send a short
-            note with sources.
+            Want to follow DiGA market updates, suggest a profile, or correct a public-source detail? Send a short note
+            with sources.
           </p>
-          <a href="mailto:peter.scheinsohn@gmail.com">peter.scheinsohn@gmail.com</a>
+          <div class="contact-actions">
+            <a
+              class="primary-action"
+              href="mailto:peter.scheinsohn@gmail.com?subject=Health%20Tech%20Scout%20updates"
+            >
+              Email me
+            </a>
+            <a
+              class="secondary-action"
+              href="mailto:peter.scheinsohn@gmail.com?subject=DiGA%20profile%20suggestion"
+            >
+              Suggest a profile
+            </a>
+          </div>
         </div>
       </section>
 
       <section class="disclaimer" aria-label="Independent directory disclaimer">
         <p>
           Health Tech Scout is an independent research project. DiGA profiles are based on public BfArM registry
-          information and public company sources. Adjacent company profiles do not imply partnership, endorsement,
-          certification, or medical advice. Please verify details with official sources before making decisions.
+          information and public company sources. Inclusion does not imply partnership, endorsement, certification, or
+          medical advice. Please verify details with official sources before making decisions.
         </p>
       </section>
     </main>
 
     <footer class="footer">
       <span>Health Tech Scout</span>
-      <span>Independent DiGA-first research directory · Germany / Europe</span>
+      <span>DiGA and digital health research · Germany / Europe</span>
     </footer>
 
-    <script src="script.js?v=diga-first"></script>
+    <script src="script.js?v=separate-analytics-project"></script>
   </body>
 </html>

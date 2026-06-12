@@ -2,97 +2,97 @@ const profiles = [
   {
     name: "Mindable: Panic & Agoraphobia",
     manufacturer: "Mindable Health GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Digital Therapeutics",
+    lens: "Mental Health",
     audience: "Patients, physicians",
     customerType: "Patients",
     useCase: "Prescription-oriented support for panic disorder and agoraphobia.",
     description:
       "A DiGA profile that helps map the mental-health segment of Germany's regulated digital therapeutics market.",
-    tags: ["Mental health", "Anxiety", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/00329",
+    tags: ["Mental health", "Anxiety"],
+    source: "https://www.mindable.health",
     checked: "BfArM registry",
   },
   {
     name: "Kaia Back Pain",
     manufacturer: "kaia health software GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Digital Therapeutics",
+    lens: "Musculoskeletal",
     audience: "Patients, physicians, payers",
     customerType: "Patients",
     useCase: "Digital back pain training and self-management.",
     description:
       "A musculoskeletal DiGA example showing how software-based interventions can support high-burden chronic care areas.",
-    tags: ["MSK", "Pain", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/01330",
+    tags: ["MSK", "Pain"],
+    source: "https://www.kaiahealth.de/rueckenschmerzen/",
     checked: "BfArM registry",
   },
   {
     name: "Oviva Direkt for Obesity",
     manufacturer: "Oviva AG, German branch",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Metabolic Health",
+    lens: "Metabolic Care",
     audience: "Patients, physicians, payers",
     customerType: "Patients",
     useCase: "Digital support for obesity care and behavior change.",
     description:
       "A DiGA profile in metabolic care, useful for scouting reimbursement-backed digital interventions for chronic conditions.",
-    tags: ["Obesity", "Lifestyle", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/00872",
+    tags: ["Obesity", "Lifestyle"],
+    source: "https://oviva.com/de/de/direkt/",
     checked: "BfArM registry",
   },
   {
     name: "HelloBetter Diabetes",
     manufacturer: "GET.ON Institut fuer Online Gesundheitstrainings GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Metabolic Health",
+    lens: "Metabolic Care",
     audience: "Patients, physicians",
     customerType: "Patients",
     useCase: "Digital psychological support in diabetes care.",
     description:
       "A chronic-care DiGA example where behavioral health, metabolic disease, and digital treatment support overlap.",
-    tags: ["Diabetes", "Behavioral health", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/01376",
+    tags: ["Diabetes", "Behavioral health"],
+    source: "https://hellobetter.de/online-kurse/diabetes/",
     checked: "BfArM registry",
   },
   {
     name: "Selfapy Online Course for Depression",
     manufacturer: "Selfapy GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Digital Therapeutics",
+    lens: "Mental Health",
     audience: "Patients, physicians",
     customerType: "Patients",
     useCase: "Digital mental health support for depressive disorders.",
     description:
       "A mental-health DiGA profile that makes evidence, access, and reimbursement questions visible in one market segment.",
-    tags: ["Depression", "Mental health", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/00876",
+    tags: ["Depression", "Mental health"],
+    source: "https://www.selfapy.com/kurse/depression",
     checked: "BfArM registry",
   },
   {
     name: "Kranus Edera",
     manufacturer: "Kranus Health GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Urology & Men's Health",
+    lens: "Urology",
     audience: "Patients, physicians",
     customerType: "Patients",
     useCase: "Digital support for erectile dysfunction care.",
     description:
       "A regulated digital health example in urology, useful for understanding condition-specific DiGA positioning.",
-    tags: ["Urology", "Men's health", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/01282",
+    tags: ["Urology", "Men's health"],
+    source: "https://www.kranushealth.com",
     checked: "BfArM registry",
   },
   {
     name: "Endo-App",
     manufacturer: "Endo Health GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
     lens: "Women's Health",
     audience: "Patients, physicians",
@@ -100,74 +100,74 @@ const profiles = [
     useCase: "Digital support for endometriosis.",
     description:
       "A women's-health DiGA profile showing how regulated apps can target care gaps around chronic and under-served conditions.",
-    tags: ["Endometriosis", "Women's health", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/01734",
+    tags: ["Endometriosis", "Women's health"],
+    source: "https://diga.endometriose.app/",
     checked: "BfArM registry",
   },
   {
     name: "Invirto",
     manufacturer: "Sympatient GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Digital Therapeutics",
+    lens: "Mental Health",
     audience: "Patients, physicians",
     customerType: "Patients",
     useCase: "Digital therapy support for anxiety disorders.",
     description:
       "A DiGA profile useful for comparing mental-health approaches, target indications, and patient-facing delivery models.",
-    tags: ["Anxiety", "VR support", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/00300",
+    tags: ["Anxiety", "VR support"],
+    source: "https://www.invirto.de",
     checked: "BfArM registry",
   },
   {
     name: "PINK! Coach",
     manufacturer: "PINK gegen Brustkrebs GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Oncology Support",
+    lens: "Oncology",
     audience: "Patients, physicians",
     customerType: "Patients",
     useCase: "Digital support for people affected by breast cancer.",
     description:
       "An oncology-support DiGA profile that connects patient education, daily support, and regulated app reimbursement.",
-    tags: ["Oncology", "Breast cancer", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/01464",
+    tags: ["Oncology", "Breast cancer"],
+    source: "https://www.pink-brustkrebs.de/das-bietet-pink/lp-pink-coach",
     checked: "BfArM registry",
   },
   {
     name: "ProHerz",
     manufacturer: "ProCarement GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Listed DiGA",
-    lens: "Cardiometabolic Care",
+    lens: "Cardiology",
     audience: "Patients, physicians",
     customerType: "Patients",
     useCase: "Digital support in heart failure-related care.",
     description:
       "A DiGA profile that points toward demand for remote support, chronic-care pathways, and cardiology-adjacent services.",
-    tags: ["Cardiology", "Chronic care", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/01823",
+    tags: ["Cardiology", "Chronic care"],
+    source: "https://procarement.com/",
     checked: "BfArM registry",
   },
   {
     name: "eCovery Lower Back Pain",
     manufacturer: "eCovery GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Preliminary DiGA",
-    lens: "Digital Therapeutics",
+    lens: "Musculoskeletal",
     audience: "Patients, physicians",
     customerType: "Patients",
     useCase: "Digital therapy support for lower back pain.",
     description:
       "A preliminary DiGA profile included to show that the scout can track new regulated applications as the market develops.",
-    tags: ["MSK", "Preliminary", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/02173",
+    tags: ["MSK", "Preliminary"],
+    source: "https://ecovery.de",
     checked: "BfArM registry",
   },
   {
     name: "memodio",
     manufacturer: "memodio GmbH",
-    track: "DiGA (BfArM)",
+    track: "DiGA",
     status: "Preliminary DiGA",
     lens: "Neurology & Cognition",
     audience: "Patients, physicians",
@@ -175,8 +175,8 @@ const profiles = [
     useCase: "Digital support in cognitive health.",
     description:
       "A preliminary DiGA example that helps monitor where future regulated digital health applications may expand.",
-    tags: ["Cognition", "Preliminary", "BfArM"],
-    source: "https://diga.bfarm.de/de/verzeichnis/02866",
+    tags: ["Cognition", "Preliminary"],
+    source: "https://memodio-app.com/",
     checked: "BfArM registry",
   },
   {
@@ -275,7 +275,7 @@ const useCases = [
     title: "Chronic & Metabolic Care",
     lens: "Long-term support",
     description:
-      "DiGA products and adjacent solutions around obesity, diabetes, cardiology, and behavior change in chronic-care pathways.",
+      "DiGA products around obesity, diabetes, cardiology, and behavior change in chronic-care pathways.",
     examples: ["Oviva", "HelloBetter Diabetes", "ProHerz", "Vitadio"],
   },
   {
@@ -285,21 +285,13 @@ const useCases = [
       "Focused regulated applications in women's health, oncology support, urology, neurology, tinnitus, and other indication-specific needs.",
     examples: ["Endo-App", "PINK! Coach", "Kranus", "memodio"],
   },
-  {
-    title: "Adjacent Digital Health",
-    lens: "Market context",
-    description:
-      "Non-DiGA companies that help explain the wider ecosystem around access, provider workflows, clinical knowledge, infrastructure, and evidence.",
-    examples: ["coobi", "m.Doc", "AMBOSS", "Temedica"],
-  },
 ];
 
 const companyGrid = document.querySelector("#companyGrid");
 const useCaseGrid = document.querySelector("#useCaseGrid");
 const companySearch = document.querySelector("#companySearch");
 const lensFilter = document.querySelector("#lensFilter");
-const audienceFilter = document.querySelector("#audienceFilter");
-const trackFilter = document.querySelector("#trackFilter");
+const statusFilter = document.querySelector("#statusFilter");
 const resultCount = document.querySelector("#resultCount");
 const resetFilters = document.querySelector("#resetFilters");
 const emptyState = document.querySelector("#emptyState");
@@ -339,15 +331,14 @@ function matchesProfile(profile, query) {
 function renderProfiles() {
   const query = companySearch.value.trim().toLowerCase();
   const lens = lensFilter.value;
-  const audience = audienceFilter.value;
-  const track = trackFilter.value;
+  const status = statusFilter.value;
+  const digaProfiles = profiles.filter((profile) => profile.track === "DiGA");
 
-  const visible = profiles.filter((profile) => {
+  const visible = digaProfiles.filter((profile) => {
     const lensMatch = lens === "all" || profile.lens === lens;
-    const audienceMatch = audience === "all" || profile.customerType === audience;
-    const trackMatch = track === "all" || profile.track === track;
+    const statusMatch = status === "all" || profile.status === status;
     const queryMatch = query === "" || matchesProfile(profile, query);
-    return lensMatch && audienceMatch && trackMatch && queryMatch;
+    return lensMatch && statusMatch && queryMatch;
   });
 
   companyGrid.innerHTML = visible
@@ -366,15 +357,14 @@ function renderProfiles() {
             </div>
           </div>
           <div class="company-footer">
-            <span class="company-source">${profile.checked}</span>
-            <a href="${profile.source}" target="_blank" rel="noreferrer">Source</a>
+            <a href="${profile.source}" target="_blank" rel="noreferrer">Website</a>
           </div>
         </article>
       `
     )
     .join("");
 
-  resultCount.textContent = visible.length === profiles.length ? "Selected profiles" : "Filtered profiles";
+  resultCount.textContent = visible.length === digaProfiles.length ? "DiGA profiles" : "Filtered DiGA profiles";
   emptyState.hidden = visible.length > 0;
 }
 
@@ -398,20 +388,31 @@ function renderUseCases() {
 function resetAllFilters() {
   companySearch.value = "";
   lensFilter.value = "all";
-  audienceFilter.value = "all";
-  trackFilter.value = "all";
+  statusFilter.value = "all";
   renderProfiles();
 }
 
-addOptions(lensFilter, uniqueValues("lens"));
-addOptions(audienceFilter, uniqueValues("customerType"));
-addOptions(trackFilter, uniqueValues("track"));
+addOptions(
+  lensFilter,
+  uniqueValues("lens").filter((value) => profiles.some((profile) => profile.track === "DiGA" && profile.lens === value))
+);
+addOptions(
+  statusFilter,
+  uniqueValues("status").filter((value) => profiles.some((profile) => profile.track === "DiGA" && profile.status === value))
+);
 
 renderUseCases();
 renderProfiles();
 
-[companySearch, lensFilter, audienceFilter, trackFilter].forEach((control) => {
+[companySearch, lensFilter, statusFilter].forEach((control) => {
   control.addEventListener("input", renderProfiles);
 });
 
 resetFilters.addEventListener("click", resetAllFilters);
+
+document.querySelectorAll("[data-status-filter]").forEach((link) => {
+  link.addEventListener("click", () => {
+    statusFilter.value = link.dataset.statusFilter;
+    renderProfiles();
+  });
+});

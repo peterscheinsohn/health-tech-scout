@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hospital Discharge Intelligence | Health Tech Scout</title>
+    <meta
+      name="description"
+      content="A healthcare data analysis case study using SPARCS 2021 hospital discharge data to explore cost, length of stay, payer, diagnosis, and provider-level signals."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Health Tech Scout home">
+        <img class="brand-mark" src="assets/hts-scout-logo.svg" alt="" aria-hidden="true" />
+        <span>Health Tech Scout</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="index.html#companies">DiGA Scout</a>
+        <a href="index.html#care-areas">Care Areas</a>
+        <a href="analytics-project.html">Healthcare Analytics</a>
+        <a href="index.html#about">About</a>
+      </nav>
+      <a class="header-link" href="https://www.linkedin.com/in/peterscheinsohn" target="_blank" rel="noreferrer">
+        LinkedIn
+      </a>
+      <div class="language-switch" aria-label="Language availability">
+        <span>EN</span>
+        <span>DE planned</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="project-hero" aria-labelledby="project-title">
+        <div class="project-hero-copy">
+          <p class="eyebrow">Healthcare analytics</p>
+          <h1 id="project-title">Hospital Discharge Intelligence.</h1>
+          <p class="hero-text">
+            A healthcare data analysis case study using de-identified New York hospital discharge data to explore where
+            operational burden becomes visible: costs, length of stay, payer mix, diagnosis groups, mortality risk, and
+            provider-level variation. Python and Pandas were used for data preparation; Power BI was used for modeling,
+            analysis, and dashboard delivery.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="primary-action"
+              href="https://app.powerbi.com/view?r=eyJrIjoiYjk5N2M2NTQtZGMxOC00ZjczLWEyNzgtNTg1MDc3ODk0ZWU3IiwidCI6IjcyYjM0ZmM2LTE1OTctNGRiOC1iYTFlLTA0ZmZlOGQzOTMwOSJ9"
+            >
+              Open Power BI dashboard
+            </a>
+            <a
+              class="secondary-action"
+              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View GitHub
+            </a>
+            <a
+              class="secondary-action"
+              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project/blob/main/Hospitals_discharges_2021_USA.pdf"
+              target="_blank"
+              rel="noreferrer"
+            >
+              PDF preview
+            </a>
+          </div>
+        </div>
+
+        <div class="project-metrics" aria-label="Project metrics">
+          <div>
+            <b>2.05M</b>
+            <span>de-identified discharge records</span>
+          </div>
+          <div>
+            <b>202</b>
+            <span>New York State hospitals</span>
+          </div>
+          <div>
+            <b>14</b>
+            <span>analysis-ready fields</span>
+          </div>
+          <div>
+            <b>Power BI</b>
+            <span>interactive dashboard</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="project-band" aria-labelledby="why-title">
+        <div>
+          <p class="eyebrow">Why it matters</p>
+          <h2 id="why-title">From healthcare burden to product questions.</h2>
+        </div>
+        <div class="project-text">
+          <p>
+            The project starts from a simple idea: healthtech scouting should not only begin with company descriptions
+            or technology labels. It should also begin with measurable healthcare problems.
+          </p>
+          <p>
+            Hospital discharge data can reveal where patient complexity, provider workload, payer mix, and financial
+            pressure concentrate. Those patterns can then point toward relevant healthtech use cases such as discharge
+            planning, care navigation, remote monitoring, hospital analytics, and cost transparency.
+          </p>
+        </div>
+      </section>
+
+      <section class="project-section" aria-labelledby="questions-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Analytical questions</p>
+            <h2 id="questions-title">What the dashboard explores.</h2>
+          </div>
+          <p>
+            The analysis is descriptive. It is designed for exploration and hypothesis generation, not causal claims.
+          </p>
+        </div>
+        <div class="insight-grid">
+          <article>
+            <h3>Cost pressure</h3>
+            <p>Which diagnosis groups are associated with unusually high median costs and charges?</p>
+          </article>
+          <article>
+            <h3>Length of stay</h3>
+            <p>Where do long stays suggest care coordination, discharge, or aftercare challenges?</p>
+          </article>
+          <article>
+            <h3>Payer and risk mix</h3>
+            <p>How do cost, payer groups, severity, and mortality-risk patterns differ across segments?</p>
+          </article>
+          <article>
+            <h3>Provider variation</h3>
+            <p>Where do hospital-level patterns reveal operational heterogeneity worth investigating further?</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="project-section project-section-soft" aria-labelledby="data-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Data and method</p>
+            <h2 id="data-title">Public real-world data, cleaned for analysis.</h2>
+          </div>
+          <p>
+            The dataset is the 2021 SPARCS de-identified inpatient discharge file from New York State. It contains
+            discharge-level detail on patient characteristics, diagnoses, services, and charges without protected health
+            information.
+          </p>
+        </div>
+        <div class="method-grid">
+          <article>
+            <span>Source</span>
+            <h3>SPARCS 2021</h3>
+            <p>Hospital Inpatient Discharges, de-identified, New York State Department of Health.</p>
+          </article>
+          <article>
+            <span>Cleaning</span>
+            <h3>Python and Pandas</h3>
+            <p>Reduced the raw file from 32 columns to 14 analysis-ready fields.</p>
+          </article>
+          <article>
+            <span>BI model</span>
+            <h3>Power BI</h3>
+            <p>Built the analytical model and measures for cost, charges, length of stay, payer comparison, and risk segmentation.</p>
+          </article>
+          <article>
+            <span>Dashboard</span>
+            <h3>Interactive report</h3>
+            <p>Designed an interactive dashboard focused on burden, provider variation, and financial signals.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="project-section" aria-labelledby="findings-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Selected signals</p>
+            <h2 id="findings-title">Examples from the analysis.</h2>
+          </div>
+          <p>These are descriptive signals from the dashboard, not medical or policy conclusions.</p>
+        </div>
+        <div class="findings-list">
+          <p>
+            <strong>High-cost diagnosis signal:</strong> one diagnosis group in the dashboard showed an approximately
+            $90K median cost.
+          </p>
+          <p>
+            <strong>Long-stay signal:</strong> maltreatment and abuse-related cases showed an average stay of 37 days.
+          </p>
+          <p>
+            <strong>Financial signal:</strong> several service lines showed charges around 3-3.5x actual care costs.
+          </p>
+          <p>
+            <strong>Payer and risk signal:</strong> Medicare discharges showed higher average costs and a larger share
+            of major or extreme mortality risk than private insurance patients in this dataset view.
+          </p>
+        </div>
+      </section>
+
+      <section class="project-section project-section-dark" aria-labelledby="limitations-title">
+        <div>
+          <p class="eyebrow">Limitations</p>
+          <h2 id="limitations-title">What this project does not claim.</h2>
+        </div>
+        <ul>
+          <li>This is a descriptive analysis, not a causal study.</li>
+          <li>The dataset covers New York State inpatient discharges in 2021.</li>
+          <li>Patterns may reflect coding, case mix, hospital specialization, and other contextual factors.</li>
+          <li>The dashboard is for exploration, not medical, reimbursement, or policy decisions.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Health Tech Scout</span>
+      <span>Hospital Discharge Intelligence · Healthcare Analytics</span>
+    </footer>
+  </body>
+</html>
