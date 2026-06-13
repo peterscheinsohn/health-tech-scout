@@ -8,7 +8,7 @@
       name="description"
       content="A healthcare data analysis case study using SPARCS 2021 hospital discharge data to explore cost, length of stay, payer, diagnosis, and provider-level signals."
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=motion-charts" />
   </head>
   <body>
     <header class="site-header">
@@ -85,6 +85,119 @@
             <b>Power BI</b>
             <span>interactive dashboard</span>
           </div>
+        </div>
+      </section>
+
+      <section class="dashboard-preview-section" aria-labelledby="dashboard-preview-title">
+        <div class="dashboard-preview-copy">
+          <p class="eyebrow">Project preview</p>
+          <h2 id="dashboard-preview-title">Dashboard signals at a glance.</h2>
+          <p>
+            A visual preview of the analytical patterns. The full dashboard remains available for interactive
+            exploration.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="primary-action"
+              href="https://app.powerbi.com/view?r=eyJrIjoiYjk5N2M2NTQtZGMxOC00ZjczLWEyNzgtNTg1MDc3ODk0ZWU3IiwidCI6IjcyYjM0ZmM2LTE1OTctNGRiOC1iYTFlLTA0ZmZlOGQzOTMwOSJ9"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open interactive dashboard
+            </a>
+            <a
+              class="secondary-action"
+              href="https://github.com/peterscheinsohn/NY-Hospital-Discharge-Analysis-Project/blob/main/Hospitals_discharges_2021_USA.pdf"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View PDF report
+            </a>
+          </div>
+        </div>
+        <div class="analytics-infographic" aria-label="Hospital discharge dashboard signal preview">
+          <article class="chart-card chart-card-wide" style="--motion-index: 0">
+            <div class="chart-card-heading">
+              <span>Median cost by diagnosis</span>
+              <strong>Selected high-cost contrast</strong>
+            </div>
+            <div class="horizontal-chart" aria-label="Median cost contrast between diagnosis groups">
+              <div class="chart-row">
+                <span>Foreign body entering opening</span>
+                <i style="--value: 100%"></i>
+                <strong>~$90K</strong>
+              </div>
+              <div class="chart-row">
+                <span>Chronic rheumatic heart disease</span>
+                <i style="--value: 56%"></i>
+                <strong>~$50K</strong>
+              </div>
+              <div class="chart-row muted-row">
+                <span>Selected comparator group</span>
+                <i style="--value: 34%"></i>
+                <strong>lower</strong>
+              </div>
+              <div class="chart-row muted-row">
+                <span>Common-care baseline</span>
+                <i style="--value: 22%"></i>
+                <strong>lower</strong>
+              </div>
+            </div>
+          </article>
+          <article class="chart-card" style="--motion-index: 1">
+            <div class="chart-card-heading">
+              <span>Length of stay</span>
+              <strong>Care complexity signal</strong>
+            </div>
+            <div class="column-chart" aria-label="Length of stay burden comparison">
+              <div style="--height: 100%">
+                <i></i>
+                <strong>37d</strong>
+                <span>Maltreatment / abuse</span>
+              </div>
+              <div style="--height: 42%">
+                <i></i>
+                <strong>lower</strong>
+                <span>Respiratory care</span>
+              </div>
+              <div style="--height: 28%">
+                <i></i>
+                <strong>lower</strong>
+                <span>Common inpatient</span>
+              </div>
+            </div>
+          </article>
+          <article class="chart-card" style="--motion-index: 2">
+            <div class="chart-card-heading">
+              <span>Charges vs. costs</span>
+              <strong>Financial pressure</strong>
+            </div>
+            <div class="ratio-meter" aria-label="Charges to cost ratio">
+              <b>3-3.5x</b>
+              <div>
+                <i style="--value: 72%"></i>
+              </div>
+              <span>Selected service lines showed charges several times above actual care costs.</span>
+            </div>
+          </article>
+          <article class="chart-card chart-card-wide" style="--motion-index: 3">
+            <div class="chart-card-heading">
+              <span>Payer and risk mix</span>
+              <strong>Higher-risk segment</strong>
+            </div>
+            <div class="risk-bars" aria-label="Mortality risk comparison by payer group">
+              <div>
+                <span>Medicare</span>
+                <i><b style="--value: 72%"></b></i>
+                <strong>more major / extreme risk</strong>
+              </div>
+              <div>
+                <span>Private insurance</span>
+                <i><b style="--value: 34%"></b></i>
+                <strong>lower share</strong>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -216,5 +329,37 @@
       <span>Health Tech Scout</span>
       <span>Hospital Discharge Intelligence · Healthcare Analytics</span>
     </footer>
+    <script>
+      (() => {
+        const infographic = document.querySelector(".analytics-infographic");
+
+        if (!infographic || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          return;
+        }
+
+        infographic.classList.add("motion-ready");
+
+        const showInfographic = () => {
+          infographic.classList.add("is-visible");
+        };
+
+        if (!("IntersectionObserver" in window)) {
+          showInfographic();
+          return;
+        }
+
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              showInfographic();
+              observer.disconnect();
+            }
+          },
+          { threshold: 0.28 }
+        );
+
+        observer.observe(infographic);
+      })();
+    </script>
   </body>
 </html>

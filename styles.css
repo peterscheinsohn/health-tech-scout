@@ -452,6 +452,350 @@ h3 {
   font-weight: 800;
 }
 
+.dashboard-preview-section {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.38fr) minmax(0, 1fr);
+  gap: 42px;
+  align-items: center;
+  padding: 58px 7vw;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 82% 18%, rgba(39, 76, 119, 0.08), transparent 28%),
+    #ffffff;
+}
+
+.dashboard-preview-copy {
+  min-width: 0;
+  max-width: 500px;
+}
+
+.dashboard-preview-copy p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.analytics-infographic {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+
+.chart-card {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  min-height: 236px;
+  padding: 20px;
+  border: 1px solid rgba(23, 33, 43, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 42px rgba(28, 45, 55, 0.1);
+}
+
+.motion-ready .chart-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 720ms ease,
+    transform 720ms ease;
+  transition-delay: calc(var(--motion-index, 0) * 130ms);
+}
+
+.motion-ready.is-visible .chart-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chart-card-wide {
+  grid-column: 1 / -1;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(238, 244, 241, 0.9)),
+    #ffffff;
+}
+
+.chart-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.chart-card-heading span {
+  display: block;
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chart-card-heading strong {
+  max-width: 210px;
+  color: #2f3b43;
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: right;
+}
+
+.horizontal-chart {
+  display: grid;
+  gap: 13px;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.92fr) minmax(180px, 1fr) 60px;
+  gap: 12px;
+  align-items: center;
+}
+
+.chart-row span,
+.risk-bars span,
+.ratio-meter span,
+.column-chart span {
+  color: #42515b;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.chart-row i {
+  display: block;
+  width: var(--value);
+  min-width: 34px;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--blue));
+}
+
+.motion-ready .chart-row i,
+.motion-ready .ratio-meter i,
+.motion-ready .risk-bars b {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.motion-ready.is-visible .chart-row i,
+.motion-ready.is-visible .ratio-meter i,
+.motion-ready.is-visible .risk-bars b {
+  animation: drawBarLoop 8.6s cubic-bezier(0.2, 0.74, 0.24, 1) infinite;
+}
+
+.motion-ready .horizontal-chart .chart-row:nth-child(1) i {
+  animation-delay: 0ms;
+}
+
+.motion-ready .horizontal-chart .chart-row:nth-child(2) i {
+  animation-delay: 160ms;
+}
+
+.motion-ready .horizontal-chart .chart-row:nth-child(3) i {
+  animation-delay: 320ms;
+}
+
+.motion-ready .horizontal-chart .chart-row:nth-child(4) i {
+  animation-delay: 480ms;
+}
+
+.chart-row strong {
+  color: var(--ink);
+  font-size: 16px;
+  text-align: right;
+}
+
+.muted-row i {
+  opacity: 0.38;
+}
+
+.muted-row strong {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.column-chart {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+  min-height: 150px;
+  align-items: end;
+}
+
+.column-chart div {
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 8px;
+  height: 100%;
+}
+
+.column-chart i {
+  align-self: end;
+  display: block;
+  width: 100%;
+  height: var(--height);
+  min-height: 34px;
+  border-radius: 8px 8px 3px 3px;
+  background: linear-gradient(180deg, var(--blue), var(--accent));
+}
+
+.motion-ready .column-chart i {
+  transform: scaleY(0);
+  transform-origin: center bottom;
+}
+
+.motion-ready.is-visible .column-chart i {
+  animation: drawColumnLoop 8.6s cubic-bezier(0.2, 0.74, 0.24, 1) infinite;
+}
+
+.motion-ready .column-chart div:nth-child(1) i {
+  animation-delay: 240ms;
+}
+
+.motion-ready .column-chart div:nth-child(2) i {
+  animation-delay: 400ms;
+}
+
+.motion-ready .column-chart div:nth-child(3) i {
+  animation-delay: 560ms;
+}
+
+.column-chart strong {
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.ratio-meter {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+  min-height: 150px;
+}
+
+.ratio-meter b {
+  color: var(--ink);
+  font-size: clamp(42px, 5vw, 58px);
+  line-height: 0.95;
+}
+
+.ratio-meter div {
+  overflow: hidden;
+  height: 16px;
+  border-radius: 999px;
+  background: #dce7e3;
+}
+
+.ratio-meter i {
+  display: block;
+  width: var(--value);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #d89b3d);
+}
+
+.risk-bars {
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  min-height: 150px;
+}
+
+.risk-bars div {
+  display: grid;
+  grid-template-columns: 94px minmax(120px, 1fr);
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.risk-bars i {
+  overflow: hidden;
+  height: 16px;
+  border-radius: 999px;
+  background: #e6ece9;
+}
+
+.risk-bars b {
+  display: block;
+  width: var(--value);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue), var(--accent));
+}
+
+.risk-bars strong {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.motion-ready .ratio-meter b,
+.motion-ready .column-chart strong,
+.motion-ready .chart-row strong,
+.motion-ready .risk-bars strong {
+  opacity: 0;
+  transform: translateY(5px);
+  transition:
+    opacity 360ms ease,
+    transform 360ms ease;
+  transition-delay: calc(520ms + var(--motion-index, 0) * 80ms);
+}
+
+.motion-ready.is-visible .ratio-meter b,
+.motion-ready.is-visible .column-chart strong,
+.motion-ready.is-visible .chart-row strong,
+.motion-ready.is-visible .risk-bars strong {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.motion-ready .risk-bars div:nth-child(1) b {
+  animation-delay: 660ms;
+}
+
+.motion-ready .risk-bars div:nth-child(2) b {
+  animation-delay: 820ms;
+}
+
+.motion-ready.is-visible .ratio-meter i {
+  animation-delay: 560ms;
+}
+
+@keyframes drawBarLoop {
+  0%,
+  8% {
+    transform: scaleX(0);
+  }
+
+  30%,
+  76% {
+    transform: scaleX(1);
+  }
+
+  92%,
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes drawColumnLoop {
+  0%,
+  8% {
+    transform: scaleY(0);
+  }
+
+  32%,
+  76% {
+    transform: scaleY(1);
+  }
+
+  92%,
+  100% {
+    transform: scaleY(0);
+  }
+}
+
 .project-band {
   display: grid;
   grid-template-columns: minmax(0, 0.76fr) minmax(320px, 1fr);
@@ -962,6 +1306,8 @@ a:focus-visible {
   .hero,
   .section-heading,
   .project-hero,
+  .dashboard-preview-section,
+  .chart-card-wide,
   .project-band,
   .project-section-dark,
   .about-author,
@@ -1000,6 +1346,7 @@ a:focus-visible {
   .hero,
   .section,
   .project-hero,
+  .dashboard-preview-section,
   .project-band,
   .project-section {
     padding: 58px 20px;
@@ -1026,6 +1373,7 @@ a:focus-visible {
   .insight-grid,
   .method-grid,
   .findings-list,
+  .analytics-infographic,
   .signal-grid,
   .filters {
     grid-template-columns: 1fr;
@@ -1053,11 +1401,48 @@ a:focus-visible {
   .contact-actions {
     justify-content: flex-start;
   }
+
+  .chart-row,
+  .risk-bars div {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .chart-row strong {
+    text-align: left;
+  }
+
+  .chart-card-heading {
+    display: grid;
+  }
+
+  .chart-card-heading strong {
+    max-width: none;
+    text-align: left;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero::before {
     animation: none;
     transform: scale(1.05);
+  }
+
+  .motion-ready .chart-card,
+  .motion-ready .ratio-meter b,
+  .motion-ready .column-chart strong,
+  .motion-ready .chart-row strong,
+  .motion-ready .risk-bars strong {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .motion-ready .chart-row i,
+  .motion-ready .ratio-meter i,
+  .motion-ready .risk-bars b,
+  .motion-ready .column-chart i {
+    animation: none;
+    transform: none;
   }
 }
