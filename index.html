@@ -8,12 +8,11 @@
       name="description"
       content="Health Tech Scout is an independent DiGA-first research directory based on official BfArM registry signals, manufacturer websites, and healthcare analytics work."
     />
-    <link rel="stylesheet" href="styles.css?v=motion-charts" />
+    <link rel="stylesheet" href="styles.css?v=site-fixes" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Health Tech Scout home">
-        <img class="brand-mark" src="assets/hts-scout-logo.svg" alt="" aria-hidden="true" />
         <span>Health Tech Scout</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
@@ -70,9 +69,9 @@
               <b>Listed DiGA</b>
               <span>regulated applications</span>
             </a>
-            <a class="signal-tile" href="#companies" data-status-filter="Preliminary DiGA">
-              <b>Preliminary DiGA</b>
-              <span>temporary listing status</span>
+            <a class="signal-tile" href="#care-areas">
+              <b>Care areas</b>
+              <span>market segments</span>
             </a>
             <a class="signal-tile" href="analytics-project.html">
               <b>Healthcare Analytics</b>
@@ -143,6 +142,9 @@
           </div>
 
           <div class="company-grid" id="companyGrid"></div>
+          <div class="load-more-row">
+            <button id="showMoreProfiles" type="button">Show more</button>
+          </div>
           <p class="empty-state" id="emptyState" hidden>No profiles match these filters yet.</p>
         </div>
       </section>
@@ -198,7 +200,7 @@
           </figure>
           <div class="about-copy">
             <p class="eyebrow">About the author</p>
-            <h2 id="about-title">Built by Peter Scheinsohn, PhD.</h2>
+            <h2 id="about-title">I built Health Tech Scout.</h2>
             <div class="profile-facts" aria-label="Professional highlights">
               <span><strong>10+</strong> years in regulated data</span>
               <span><strong>Life sciences</strong> clinical research, drug safety, pharma consulting</span>
@@ -251,8 +253,12 @@
     <footer class="footer">
       <span>Health Tech Scout</span>
       <span>DiGA and digital health research · Germany / Europe</span>
+      <nav class="footer-links" aria-label="Legal links">
+        <a href="imprint.html">Imprint</a>
+        <a href="data-protection.html">Data Protection</a>
+      </nav>
     </footer>
 
-    <script src="script.js?v=separate-analytics-project"></script>
+    <script src="script.js?v=site-fixes"></script>
   </body>
 </html>

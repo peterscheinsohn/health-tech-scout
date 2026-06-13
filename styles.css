@@ -57,19 +57,10 @@ select {
 
 .brand {
   display: inline-flex;
-  gap: 12px;
   align-items: center;
   color: var(--ink);
   font-weight: 800;
   text-decoration: none;
-}
-
-.brand-mark {
-  display: block;
-  width: 42px;
-  height: 42px;
-  border-radius: 7px;
-  box-shadow: 0 8px 18px rgba(15, 79, 74, 0.15);
 }
 
 .nav {
@@ -262,7 +253,8 @@ h3 {
 
 .primary-action,
 .secondary-action,
-.results-bar button {
+.results-bar button,
+.load-more-row button {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
@@ -279,11 +271,23 @@ h3 {
 }
 
 .secondary-action,
-.results-bar button {
+.results-bar button,
+.load-more-row button {
   padding: 0 16px;
   border: 1px solid var(--line);
   background: var(--panel);
   color: var(--accent-dark);
+}
+
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.load-more-row button {
+  min-width: 156px;
+  cursor: pointer;
 }
 
 .signal-panel,
@@ -574,28 +578,29 @@ h3 {
 .motion-ready .risk-bars b {
   transform: scaleX(0);
   transform-origin: left center;
+  transition: transform 1.65s cubic-bezier(0.2, 0.74, 0.24, 1);
 }
 
 .motion-ready.is-visible .chart-row i,
 .motion-ready.is-visible .ratio-meter i,
 .motion-ready.is-visible .risk-bars b {
-  animation: drawBarLoop 8.6s cubic-bezier(0.2, 0.74, 0.24, 1) infinite;
+  transform: scaleX(1);
 }
 
 .motion-ready .horizontal-chart .chart-row:nth-child(1) i {
-  animation-delay: 0ms;
+  transition-delay: 120ms;
 }
 
 .motion-ready .horizontal-chart .chart-row:nth-child(2) i {
-  animation-delay: 160ms;
+  transition-delay: 280ms;
 }
 
 .motion-ready .horizontal-chart .chart-row:nth-child(3) i {
-  animation-delay: 320ms;
+  transition-delay: 440ms;
 }
 
 .motion-ready .horizontal-chart .chart-row:nth-child(4) i {
-  animation-delay: 480ms;
+  transition-delay: 600ms;
 }
 
 .chart-row strong {
@@ -642,22 +647,23 @@ h3 {
 .motion-ready .column-chart i {
   transform: scaleY(0);
   transform-origin: center bottom;
+  transition: transform 1.7s cubic-bezier(0.2, 0.74, 0.24, 1);
 }
 
 .motion-ready.is-visible .column-chart i {
-  animation: drawColumnLoop 8.6s cubic-bezier(0.2, 0.74, 0.24, 1) infinite;
+  transform: scaleY(1);
 }
 
 .motion-ready .column-chart div:nth-child(1) i {
-  animation-delay: 240ms;
+  transition-delay: 220ms;
 }
 
 .motion-ready .column-chart div:nth-child(2) i {
-  animation-delay: 400ms;
+  transition-delay: 380ms;
 }
 
 .motion-ready .column-chart div:nth-child(3) i {
-  animation-delay: 560ms;
+  transition-delay: 540ms;
 }
 
 .column-chart strong {
@@ -751,49 +757,15 @@ h3 {
 }
 
 .motion-ready .risk-bars div:nth-child(1) b {
-  animation-delay: 660ms;
+  transition-delay: 620ms;
 }
 
 .motion-ready .risk-bars div:nth-child(2) b {
-  animation-delay: 820ms;
+  transition-delay: 780ms;
 }
 
 .motion-ready.is-visible .ratio-meter i {
-  animation-delay: 560ms;
-}
-
-@keyframes drawBarLoop {
-  0%,
-  8% {
-    transform: scaleX(0);
-  }
-
-  30%,
-  76% {
-    transform: scaleX(1);
-  }
-
-  92%,
-  100% {
-    transform: scaleX(0);
-  }
-}
-
-@keyframes drawColumnLoop {
-  0%,
-  8% {
-    transform: scaleY(0);
-  }
-
-  32%,
-  76% {
-    transform: scaleY(1);
-  }
-
-  92%,
-  100% {
-    transform: scaleY(0);
-  }
+  transition-delay: 540ms;
 }
 
 .project-band {
@@ -1049,6 +1021,23 @@ a:focus-visible {
   padding: 20px;
 }
 
+.company-card-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.company-logo {
+  width: 58px;
+  height: 58px;
+  padding: 7px;
+  border: 1px solid rgba(23, 33, 43, 0.08);
+  border-radius: 8px;
+  background: #ffffff;
+  object-fit: contain;
+}
+
 .company-card h3 {
   margin-bottom: 8px;
 }
@@ -1288,10 +1277,64 @@ a:focus-visible {
 .footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 24px;
   padding: 28px 7vw;
   color: var(--muted);
   font-size: 14px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.footer-links a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(23, 33, 43, 0.22);
+}
+
+.footer-links a:hover {
+  color: var(--accent-dark);
+  border-color: currentColor;
+}
+
+.legal-hero {
+  padding: 120px 7vw 58px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.legal-hero h1 {
+  margin: 0;
+}
+
+.legal-section {
+  display: grid;
+  gap: 28px;
+  padding: 64px 7vw 84px;
+  background: #ffffff;
+}
+
+.legal-section article {
+  max-width: 860px;
+}
+
+.legal-section h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+
+.legal-section p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.legal-section a {
+  color: var(--accent-dark);
 }
 
 @media (max-width: 1040px) {
@@ -1333,10 +1376,6 @@ a:focus-visible {
   .site-header {
     min-height: 64px;
     padding: 0 18px;
-  }
-
-  .brand span:last-child {
-    display: none;
   }
 
   .language-switch {
@@ -1392,6 +1431,10 @@ a:focus-visible {
 
   .footer {
     display: grid;
+  }
+
+  .footer-links {
+    justify-content: flex-start;
   }
 
   .author-photo {

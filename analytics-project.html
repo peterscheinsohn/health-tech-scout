@@ -8,12 +8,11 @@
       name="description"
       content="A healthcare data analysis case study using SPARCS 2021 hospital discharge data to explore cost, length of stay, payer, diagnosis, and provider-level signals."
     />
-    <link rel="stylesheet" href="styles.css?v=motion-charts" />
+    <link rel="stylesheet" href="styles.css?v=site-fixes" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Health Tech Scout home">
-        <img class="brand-mark" src="assets/hts-scout-logo.svg" alt="" aria-hidden="true" />
         <span>Health Tech Scout</span>
       </a>
       <nav class="nav" aria-label="Primary navigation">
@@ -208,13 +207,15 @@
         </div>
         <div class="project-text">
           <p>
-            The project starts from a simple idea: healthtech scouting should not only begin with company descriptions
-            or technology labels. It should also begin with measurable healthcare problems.
+            My first goal was simple: take real healthcare data and see whether I could turn it into analytical
+            observations that may be useful in practice, for example for healthcare companies, insurers, or medical
+            organizations looking at diagnosis, cost, and risk patterns.
           </p>
           <p>
-            Hospital discharge data can reveal where patient complexity, provider workload, payer mix, and financial
-            pressure concentrate. Those patterns can then point toward relevant healthtech use cases such as discharge
-            planning, care navigation, remote monitoring, hospital analytics, and cost transparency.
+            The hospital discharge dataset interested me because it was based on real 2021 inpatient data, not a
+            synthetic training file. I wanted to see whether cost, length of stay, payer mix, and provider-level
+            variation could reveal patterns that might later be useful for practical healthtech or healthcare analytics
+            questions.
           </p>
         </div>
       </section>
@@ -328,6 +329,10 @@
     <footer class="footer">
       <span>Health Tech Scout</span>
       <span>Hospital Discharge Intelligence · Healthcare Analytics</span>
+      <nav class="footer-links" aria-label="Legal links">
+        <a href="imprint.html">Imprint</a>
+        <a href="data-protection.html">Data Protection</a>
+      </nav>
     </footer>
     <script>
       (() => {
@@ -339,23 +344,20 @@
 
         infographic.classList.add("motion-ready");
 
-        const showInfographic = () => {
-          infographic.classList.add("is-visible");
-        };
-
         if (!("IntersectionObserver" in window)) {
-          showInfographic();
+          infographic.classList.add("is-visible");
           return;
         }
 
         const observer = new IntersectionObserver(
           ([entry]) => {
             if (entry.isIntersecting) {
-              showInfographic();
-              observer.disconnect();
+              infographic.classList.add("is-visible");
+            } else {
+              infographic.classList.remove("is-visible");
             }
           },
-          { threshold: 0.28 }
+          { threshold: 0.24 }
         );
 
         observer.observe(infographic);
