@@ -596,6 +596,18 @@ function getRequestedProfileScope(message, history = []) {
 
   const scopes = [
     {
+      englishLabel: "type 1 diabetes",
+      germanLabel: "Typ-1-Diabetes",
+      matches: (profile) => /type 1/.test(normalizeSearchText(formatProfile(profile))),
+      terms: /type 1/,
+    },
+    {
+      englishLabel: "type 2 diabetes",
+      germanLabel: "Typ-2-Diabetes",
+      matches: (profile) => /type 2/.test(normalizeSearchText(formatProfile(profile))),
+      terms: /type 2/,
+    },
+    {
       englishLabel: "diabetes",
       germanLabel: "Diabetes",
       matches: (profile) => /diabetes|diabetic|type 1|type 2/.test(normalizeSearchText(formatProfile(profile))),
