@@ -300,6 +300,16 @@ function buildFallbackAnswer(message) {
   }
 
   if (question.includes("diga")) {
+    const asksForDefinition = /(^|\b)(what is|was ist|explain|erklaer|erklaere|bedeutet|means)(\b|.*\bdiga\b)/i.test(
+      question
+    );
+
+    if (asksForDefinition) {
+      return isGerman
+        ? "DiGA bedeutet Digitale Gesundheitsanwendung. Das sind regulierte digitale Gesundheits-Apps oder webbasierte Anwendungen in Deutschland, die im BfArM-Verzeichnis gelistet werden koennen und unter bestimmten Voraussetzungen von der gesetzlichen Krankenversicherung erstattet werden."
+        : "DiGA means Digitale Gesundheitsanwendung: a regulated digital health app or web-based application in Germany that can be listed by BfArM and, when official criteria apply, reimbursed through statutory health insurance.";
+    }
+
     const profiles = selectRelevantProfiles(getDigaProfiles(), message).slice(0, 8);
 
     if (isGerman && profiles.length) {
