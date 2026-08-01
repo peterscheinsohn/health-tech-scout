@@ -295,7 +295,9 @@ function cleanAssistantAnswer(answer, message) {
 
   text = text
     .replace(/^\s{0,3}#{1,6}\s*/gm, "")
+    .replace(/^\s*\*\s+/gm, "- ")
     .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*\n]+)\*/g, "$1")
     .replace(/__([^_]+)__/g, "$1");
 
   if (!asksForLinks(message)) {
@@ -318,7 +320,7 @@ function shouldUseConciseFallback(message, pageContext, answer) {
   }
 
   if (isProjectSummaryQuestion(question) && isAnalyticsQuestion(question)) {
-    return text.length > 900 || /(^|\n)\s*(what it is about|explore the project|key descriptive signals|quick summary)/i.test(text);
+    return true;
   }
 
   if (isDigaDefinitionQuestion(question)) {
