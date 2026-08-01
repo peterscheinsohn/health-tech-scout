@@ -216,7 +216,7 @@ async function askGemini(prompt, apiKey) {
       ],
       generationConfig: {
         temperature: 0.35,
-        maxOutputTokens: 900,
+        maxOutputTokens: 1400,
       },
     }),
   });
@@ -312,6 +312,10 @@ function cleanAssistantAnswer(answer, message) {
 function shouldUseConciseFallback(message, pageContext, answer) {
   const question = normalizeSearchText(`${message} ${pageContext}`);
   const text = String(answer || "");
+
+  if (/answer may have been shortened/i.test(text)) {
+    return true;
+  }
 
   if (isProjectSummaryQuestion(question) && isAnalyticsQuestion(question)) {
     return text.length > 900 || /(^|\n)\s*(what it is about|explore the project|key descriptive signals|quick summary)/i.test(text);
