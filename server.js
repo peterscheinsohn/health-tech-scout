@@ -146,6 +146,18 @@ async function createChatResponse(payload) {
     };
   }
 
+  const digaDefinitionAnswer = buildDigaDefinitionAnswer(message);
+
+  if (digaDefinitionAnswer) {
+    return {
+      status: 200,
+      body: {
+        answer: digaDefinitionAnswer,
+        model: geminiModel,
+      },
+    };
+  }
+
   if (!isSiteRelevantQuestion(message, history, pageContext)) {
     return {
       status: 200,
@@ -387,6 +399,20 @@ function buildOutOfScopeAnswer(message) {
   }
 
   return "Sorry, I only answer questions about Health Tech Scout, DiGA, DiGA profiles, care areas, and the Hospital Discharge Intelligence project. This question is outside the scope of this website. Please use Google or another search engine.";
+}
+
+function buildDigaDefinitionAnswer(message) {
+  const question = normalizeSearchText(message);
+
+  if (!isDigaDefinitionQuestion(question)) {
+    return "";
+  }
+
+  if (isGermanQuestion(message)) {
+    return "DiGA bedeutet Digitale Gesundheitsanwendung. Das sind regulierte digitale Gesundheits-Apps oder webbasierte Anwendungen in Deutschland. Sie koennen im BfArM-Verzeichnis gelistet werden und unter bestimmten Voraussetzungen von der gesetzlichen Krankenversicherung erstattet werden.";
+  }
+
+  return "DiGA means Digitale Gesundheitsanwendung: a regulated digital health app or web-based application in Germany. A DiGA can be listed by BfArM and, when the official criteria apply, reimbursed through statutory health insurance.";
 }
 
 function hasRecentSiteContext(history) {
@@ -662,6 +688,10 @@ function getRequestedProfileScope(message, history = []) {
 function isProfileListRequest(message, history = []) {
   const question = normalizeSearchText(message);
 
+  if (isDigaDefinitionQuestion(question)) {
+    return false;
+  }
+
   if (/(which|what|list|show|give|apps?|applications?|diga|welche|welcher|liste|zeig|nenn|anwendungen?)/i.test(question)) {
     return true;
   }
@@ -745,7 +775,13 @@ function isProjectSummaryQuestion(question) {
 }
 
 function isDigaDefinitionQuestion(question) {
-  return /(^|\b)(what is|was ist|explain|erklaer|erklaere|bedeutet|means)(\b|.*\bdiga\b)/i.test(question);
+  const text = normalizeSearchText(question);
+  const mentionsDiga = /\b(diga|digitale gesundheitsanwendung)\b/i.test(text);
+  const asksForDefinition = /\b(what is|what are|was ist|was sind|explain|define|definition|erklaer|erklaere|bedeutet|means)\b/i.test(
+    text
+  );
+
+  return (mentionsDiga && asksForDefinition) || /^(diga|digitale gesundheitsanwendung)\??$/i.test(text);
 }
 
 function isAnalyticsQuestion(question) {
