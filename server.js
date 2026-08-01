@@ -168,6 +168,18 @@ async function createChatResponse(payload) {
     };
   }
 
+  const noMatchingProfileAnswer = buildNoMatchingProfileAnswer(message, history);
+
+  if (noMatchingProfileAnswer) {
+    return {
+      status: 200,
+      body: {
+        answer: noMatchingProfileAnswer,
+        model: geminiModel,
+      },
+    };
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey || apiKey === "your_gemini_api_key_here") {
@@ -585,6 +597,25 @@ function buildScopedProfileAnswer(message, history = []) {
       : []),
     "This is not medical advice.",
   ].join("\n");
+}
+
+function buildNoMatchingProfileAnswer(message, history = []) {
+  if (!isProfileListRequest(message, history)) {
+    return "";
+  }
+
+  const conversationTopic = getConversationTopic(message, history);
+  const matchingProfiles = selectRelevantProfiles(getDigaProfiles(), conversationTopic);
+
+  if (matchingProfiles.length) {
+    return "";
+  }
+
+  if (isGermanQuestion(message)) {
+    return "Im aktuellen Health Tech Scout Verzeichnis finde ich keine DiGA mit einer klaren Zuordnung zu dieser Erkrankung oder diesem Care Area. Ich nenne deshalb keine Anwendungen aus anderen Bereichen. Wenn du nach einer verwandten Indikation suchst, formuliere sie bitte direkt.";
+  }
+
+  return "I cannot find a DiGA in the current Health Tech Scout directory that is explicitly listed for this condition or care area. I will not substitute applications from a different area. If you mean a related indication, please name it directly.";
 }
 
 function getRequestedProfileScope(message, history = []) {
