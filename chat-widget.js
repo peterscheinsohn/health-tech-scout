@@ -42,7 +42,7 @@
       <button class="chat-close" type="button" aria-label="Close assistant">x</button>
     </div>
     <div class="chat-disclaimer">
-      Answers are based on this site. No medical advice. Bitte keine sensiblen Gesundheitsdaten eingeben.
+      Answers are based on this site. Bitte keine sensiblen Gesundheitsdaten eingeben.
     </div>
     <div class="chat-messages" aria-live="polite"></div>
     <div class="chat-prompts" aria-label="Suggested questions"></div>
@@ -143,12 +143,13 @@
         throw new Error(data.answer || data.error || "The assistant is not available yet.");
       }
 
-      loading.textContent = data.answer;
+      setAssistantContent(loading, data.answer);
       messages.push({ role: "assistant", content: data.answer });
     } catch (error) {
-      loading.textContent =
+      const errorMessage =
         error.message ||
         "The assistant could not answer right now. Please try again after the server is configured.";
+      setAssistantContent(loading, errorMessage);
       messages.push({ role: "assistant", content: loading.textContent });
     } finally {
       isSending = false;
@@ -172,7 +173,11 @@
 
     const bubble = document.createElement("div");
     bubble.className = `chat-message chat-message-${role}`;
-    bubble.textContent = content;
+    if (role === "assistant") {
+      setAssistantContent(bubble, content);
+    } else {
+      bubble.textContent = content;
+    }
     turn.append(bubble);
     messageList.append(turn);
 
@@ -181,6 +186,31 @@
     }
     scrollToBottom();
     return bubble;
+  }
+
+  function setAssistantContent(element, content) {
+    const text = String(content || "");
+    const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"']+)/g;
+    let cursor = 0;
+
+    element.replaceChildren();
+
+    for (const match of text.matchAll(linkPattern)) {
+      const url = match[2] || match[3];
+      const label = match[1] || url;
+      const index = match.index || 0;
+      element.append(document.createTextNode(text.slice(cursor, index)));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = label;
+      element.append(link);
+      cursor = index + match[0].length;
+    }
+
+    element.append(document.createTextNode(text.slice(cursor)));
   }
 
   function setFormState() {

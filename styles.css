@@ -1503,6 +1503,12 @@ a:focus-visible {
   color: #33414a;
 }
 
+.chat-message-assistant a {
+  color: var(--accent-dark);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
 .chat-message-user {
   background: var(--accent);
   color: #ffffff;

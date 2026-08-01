@@ -305,6 +305,7 @@ Your job:
 - When listing applications for a condition or care area, include only profiles whose name, tags, care area, or description explicitly matches that condition. Do not add related but different care areas. A program for diabetes that also addresses depressive symptoms belongs in a diabetes answer; a general depression or eating-disorder program does not.
 - Only discuss adjacent or related conditions when the user explicitly asks for related, associated, or adjacent applications. Label those profiles as related, not condition-specific.
 - When the site context has no exact profile match for a condition, say so clearly. Never compensate by listing unrelated profiles from the directory, including women's-health profiles.
+- When you list a specific DiGA profile, add its source as a separate short Markdown link in this form: "[Open application](URL)". Do not add a generic disclaimer at the end of a directory answer.
 - If the user asks about the analytics dashboard, give simple descriptive interpretation. Do not make causal, medical, reimbursement, or policy claims.
 - If the user asks for a specific hospital/provider figure and the exact figure is not in the context, say that the public site context does not include that exact hospital-level row and suggest opening the Power BI dashboard filters.
 - If the user asks for medical advice, diagnosis, treatment choice, crisis help, or personal health decisions, explain that this website is not medical advice and recommend checking official sources or a qualified clinician.
@@ -454,7 +455,7 @@ function cleanAssistantAnswer(answer, message) {
     .replace(/\*([^*\n]+)\*/g, "$1")
     .replace(/__([^_]+)__/g, "$1");
 
-  if (!asksForLinks(message)) {
+  if (!asksForLinks(message) && !isProfileListRequest(message)) {
     text = text
       .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, "$1")
       .replace(/https?:\/\/\S+/g, "")
@@ -531,9 +532,7 @@ function buildFallbackAnswer(message, pageContext = "") {
       return [
         "Ja. Im Health Tech Scout sind unter anderem diese DiGA-Profile relevant:",
         "",
-        ...profiles.map((profile) => `- ${profile.name} (${profile.manufacturer}) - ${(profile.tags || []).join(", ")}`),
-        "",
-        "Bitte pruefe Details immer im BfArM-Verzeichnis oder auf der Herstellerseite. Das ist keine medizinische Empfehlung.",
+        ...profiles.map((profile) => formatProfileAnswerItem(profile, true)),
       ].join("\n");
     }
 
@@ -541,9 +540,7 @@ function buildFallbackAnswer(message, pageContext = "") {
       return [
         "Relevant DiGA profiles in the Health Tech Scout data include:",
         "",
-        ...profiles.map((profile) => `- ${profile.name} (${profile.manufacturer}) - ${(profile.tags || []).join(", ")}`),
-        "",
-        "Please verify details in the official BfArM directory or on the manufacturer website. This is not medical advice.",
+        ...profiles.map((profile) => formatProfileAnswerItem(profile)),
       ].join("\n");
     }
 
@@ -578,24 +575,22 @@ function buildScopedProfileAnswer(message, history = []) {
     return [
       `Fuer ${scope.germanLabel} sind im aktuellen Health Tech Scout Verzeichnis diese DiGA-Profile markiert:`,
       "",
-      ...profiles.map((profile) => `- ${profile.name}: ${shortProfileDescription(profile, true)}`),
+      ...profiles.map((profile) => formatProfileAnswerItem(profile, true)),
       "",
       ...(excludesOtherCareAreas
         ? ["Ich habe keine reinen Mental-Health-, Essstoerungs- oder Women's-Health-Anwendungen in diese Liste aufgenommen."]
         : []),
-      "Das ist keine medizinische Empfehlung.",
     ].join("\n");
   }
 
   return [
     `For ${scope.englishLabel}, the current Health Tech Scout directory marks these DiGA profiles:`,
     "",
-    ...profiles.map((profile) => `- ${profile.name}: ${shortProfileDescription(profile)}`),
+    ...profiles.map((profile) => formatProfileAnswerItem(profile)),
     "",
     ...(excludesOtherCareAreas
       ? ["I have not included mental-health-only, eating-disorder, or women's-health applications in this list."]
       : []),
-    "This is not medical advice.",
   ].join("\n");
 }
 
@@ -697,6 +692,14 @@ function shortProfileDescription(profile, isGerman = false) {
   const description = String(profile.description || "").trim();
   const firstSentence = description.match(/^.*?[.!?](?:\s|$)/)?.[0] || description;
   return firstSentence.replace(/\s+/g, " ").trim();
+}
+
+function formatProfileAnswerItem(profile, isGerman = false) {
+  const openLabel = isGerman ? "Anwendung oeffnen" : "Open application";
+  const source = String(profile.source || "").trim();
+  const linkLine = source ? `\n  [${openLabel}](${source})` : "";
+
+  return `- ${profile.name}: ${shortProfileDescription(profile, isGerman)}${linkLine}`;
 }
 
 function looksIncomplete(answer) {
