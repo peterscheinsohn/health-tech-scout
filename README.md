@@ -1,6 +1,6 @@
 # Health Tech Scout
 
-Static MVP for an independent DACH / Europe healthtech discovery directory.
+Web MVP for an independent DACH / Europe healthtech discovery directory.
 
 ## Purpose
 
@@ -8,7 +8,8 @@ Health Tech Scout is designed as a practical research asset:
 
 - discover healthtech companies by use case, audience, and market lens;
 - connect company discovery to healthcare problems and evidence signals;
-- present Peter Scheinsohn's hospital discharge analytics project as Evidence Pilot 01.
+- present Peter Scheinsohn's hospital discharge analytics project as Evidence Pilot 01;
+- answer site and dashboard questions with a Gemini-backed assistant in English and German.
 
 ## Publish Options
 

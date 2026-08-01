@@ -133,6 +133,8 @@
         body: JSON.stringify({
           message: content,
           history: messages.slice(-8),
+          page: window.location.pathname,
+          pageTitle: document.title,
         }),
       });
       const data = await response.json().catch(() => ({}));
