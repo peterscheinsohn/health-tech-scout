@@ -25,7 +25,7 @@ const mimeTypes = new Map([
   [".pdf", "application/pdf"],
 ]);
 
-let cachedKnowledge = null;
+const cachedKnowledge = new Map();
 
 const server = http.createServer(async (req, res) => {
   try {
@@ -149,7 +149,19 @@ async function createChatResponse(payload) {
   }
 
   const prompt = buildGeminiPrompt(message, history);
-  const answer = await askGemini(prompt, apiKey);
+  let answer;
+
+  try {
+    answer = await askGemini(prompt, apiKey);
+  } catch (error) {
+    console.error("Gemini chat error:", error.message);
+    answer = buildFallbackAnswer(message);
+  }
+
+  if (looksIncomplete(answer)) {
+    const fallback = buildFallbackAnswer(message);
+    answer = fallback || answer;
+  }
 
   return {
     status: 200,
@@ -200,7 +212,8 @@ async function askGemini(prompt, apiKey) {
         },
       ],
       generationConfig: {
-        maxOutputTokens: 900,
+        temperature: 0.35,
+        maxOutputTokens: 1600,
       },
     }),
   });
@@ -212,18 +225,23 @@ async function askGemini(prompt, apiKey) {
     throw new Error(message);
   }
 
-  const parts = data?.candidates?.[0]?.content?.parts || [];
+  const candidate = data?.candidates?.[0];
+  const parts = candidate?.content?.parts || [];
   const text = parts.map((part) => part.text || "").join("\n").trim();
 
   if (!text) {
     return "I could not generate a useful answer from the current site context. Please try rephrasing the question.";
   }
 
+  if (candidate?.finishReason === "MAX_TOKENS") {
+    return `${text}\n\nThe answer may have been shortened. Please ask a narrower follow-up if you want more detail.`;
+  }
+
   return text;
 }
 
 function buildGeminiPrompt(message, history) {
-  const context = getKnowledgeContext();
+  const context = getKnowledgeContext(message);
   const conversation = history
     .filter((entry) => entry && typeof entry.content === "string")
     .map((entry) => `${entry.role === "assistant" ? "Assistant" : "User"}: ${entry.content}`)
@@ -255,9 +273,194 @@ ${message}
 `.trim();
 }
 
-function getKnowledgeContext() {
-  if (cachedKnowledge) {
-    return cachedKnowledge;
+function buildFallbackAnswer(message) {
+  const question = normalizeSearchText(message);
+  const isGerman = /\b(was|welche|welcher|gibt|bei|angst|analyse|krankenhaus|kosten|zeigt)\b/i.test(question);
+
+  if (isAnalyticsQuestion(question)) {
+    if (isGerman) {
+      return [
+        "Das Hospital Discharge Intelligence Dashboard ist ein deskriptives Analytics-Projekt auf Basis der SPARCS 2021 Daten aus New York State.",
+        "",
+        "- Es umfasst etwa 2,05 Mio. stationaere Entlassungen, 202 Krankenhaeuser und 14 analysebereite Felder.",
+        "- Es zeigt Kosten, Charges, Aufenthaltsdauer, Payer Mix, Severity, Mortality Risk, Diagnosegruppen und Unterschiede zwischen Providern.",
+        "- Einfache Signale auf der Website: ca. 90K USD Median Cost fuer die Gruppe 'Effect of foreign body entering opening', 37 Tage durchschnittliche Aufenthaltsdauer bei Maltreatment/Abuse, und Charges oft etwa 3-3,5x hoeher als Costs.",
+        "- Wichtig: Das ist explorativ und nicht kausal. Fuer konkrete Hospital-Werte sollte man die Power BI Filter im Dashboard nutzen.",
+      ].join("\n");
+    }
+
+    return [
+      "The Hospital Discharge Intelligence dashboard is a descriptive analytics project based on SPARCS 2021 inpatient discharge data from New York State.",
+      "",
+      "- It covers about 2.05M inpatient discharge records, 202 hospitals, and 14 analysis-ready fields.",
+      "- It explores cost, charges, length of stay, payer mix, severity, mortality risk, diagnosis groups, and provider-level variation.",
+      "- Simple signals shown in the site context include about $90K median cost for 'Effect of foreign body entering opening', 37-day average stay for maltreatment/abuse-related cases, and charges often around 3-3.5x actual care costs.",
+      "- It is exploratory and descriptive, not causal evidence or medical/policy advice. For exact hospital-level values, use the Power BI dashboard filters.",
+    ].join("\n");
+  }
+
+  if (question.includes("diga")) {
+    const profiles = selectRelevantProfiles(getDigaProfiles(), message).slice(0, 8);
+
+    if (isGerman && profiles.length) {
+      return [
+        "Ja. Im Health Tech Scout sind unter anderem diese DiGA-Profile relevant:",
+        "",
+        ...profiles.map((profile) => `- ${profile.name} (${profile.manufacturer}) - ${(profile.tags || []).join(", ")}`),
+        "",
+        "Bitte pruefe Details immer im BfArM-Verzeichnis oder auf der Herstellerseite. Das ist keine medizinische Empfehlung.",
+      ].join("\n");
+    }
+
+    if (profiles.length && /which|what|list|apps|applications|angst|anxiety|panic|phobia/i.test(message)) {
+      return [
+        "Relevant DiGA profiles in the Health Tech Scout data include:",
+        "",
+        ...profiles.map((profile) => `- ${profile.name} (${profile.manufacturer}) - ${(profile.tags || []).join(", ")}`),
+        "",
+        "Please verify details in the official BfArM directory or on the manufacturer website. This is not medical advice.",
+      ].join("\n");
+    }
+
+    return isGerman
+      ? "DiGA bedeutet Digitale Gesundheitsanwendung. Das sind regulierte digitale Gesundheits-Apps oder webbasierte Anwendungen in Deutschland, die im BfArM-Verzeichnis gelistet werden koennen und unter bestimmten Voraussetzungen von der gesetzlichen Krankenversicherung erstattet werden."
+      : "DiGA means Digitale Gesundheitsanwendung: a regulated digital health app or web-based application in Germany that can be listed by BfArM and, when official criteria apply, reimbursed through statutory health insurance.";
+  }
+
+  return isGerman
+    ? "Ich kann Fragen zu DiGA, Care Areas, Firmenprofilen und dem Hospital Discharge Analytics Projekt beantworten. Bitte formuliere die Frage etwas konkreter."
+    : "I can answer questions about DiGA, care areas, company profiles, and the Hospital Discharge Analytics project. Please ask a slightly more specific question.";
+}
+
+function looksIncomplete(answer) {
+  const text = String(answer || "").trim();
+
+  if (!text) {
+    return true;
+  }
+
+  if (text.length < 80 && /\b(einige|include|includes|including|unter anderem|are|sind)\s*$/i.test(text)) {
+    return true;
+  }
+
+  return text.length > 40 && !/[.!?):\]]$/.test(text);
+}
+
+function getContextMode(topic) {
+  const normalizedTopic = normalizeSearchText(topic);
+
+  if (isAnalyticsQuestion(normalizedTopic)) {
+    return "analytics";
+  }
+
+  if (/(company|manufacturer|profile|diga|care area|indication|angst|anxiety|panic|phobia|depression|sleep|pain|provider|hersteller|krankheit|indikation)/i.test(
+    normalizedTopic
+  )) {
+    return "profiles";
+  }
+
+  return "full";
+}
+
+function isAnalyticsQuestion(question) {
+  return /(analytics|dashboard|hospital|discharge|sparcs|power bi|provider|length of stay|mortality|medicare|charges|cost|krankenhaus|entlass|analyse|aufenthalt|sterb|kosten)/i.test(
+    question
+  );
+}
+
+function getDigaProfiles() {
+  const scriptSource = fs.readFileSync(path.join(siteDir, "script.js"), "utf8");
+  return parseConstArray(scriptSource, "profiles").filter((profile) => profile.track === "DiGA");
+}
+
+function selectRelevantProfiles(profiles, topic) {
+  const queryTokens = getSearchTokens(topic);
+
+  if (!queryTokens.length) {
+    return profiles;
+  }
+
+  const synonyms = {
+    angst: ["anxiety", "panic", "panik", "phobia", "phobie", "agoraphobia", "agoraphobie", "aengste"],
+    anxiety: ["angst", "panic", "panik", "phobia", "phobie", "agoraphobia", "agoraphobie", "aengste"],
+    panic: ["panik", "agoraphobia", "agoraphobie", "anxiety", "angst"],
+    panik: ["panic", "agoraphobia", "agoraphobie", "anxiety", "angst"],
+    depression: ["depressive", "depressionen"],
+    schlaf: ["sleep", "insomnia", "schlafen"],
+    sleep: ["schlaf", "insomnia", "schlafen"],
+    pain: ["schmerz", "back", "ruecken", "musculoskeletal"],
+  };
+
+  const expandedTokens = new Set(queryTokens);
+  queryTokens.forEach((token) => (synonyms[token] || []).forEach((synonym) => expandedTokens.add(synonym)));
+  const searchableTokens = Array.from(expandedTokens).filter((token) => token.length > 2 && token !== "diga");
+
+  if (!searchableTokens.length) {
+    return profiles;
+  }
+
+  const scored = profiles
+    .map((profile) => {
+      const haystack = normalizeSearchText(formatProfile(profile));
+      const score = searchableTokens.reduce((total, token) => total + (haystack.includes(token) ? 1 : 0), 0);
+      return { profile, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || a.profile.name.localeCompare(b.profile.name));
+
+  return scored.length ? scored.map((entry) => entry.profile) : profiles;
+}
+
+function getSearchTokens(text) {
+  const stopWords = new Set([
+    "about",
+    "apps",
+    "application",
+    "applications",
+    "bei",
+    "das",
+    "der",
+    "die",
+    "diga",
+    "does",
+    "for",
+    "gibt",
+    "ist",
+    "mit",
+    "show",
+    "the",
+    "there",
+    "was",
+    "what",
+    "which",
+    "wie",
+    "welche",
+    "welcher",
+  ]);
+
+  return normalizeSearchText(text)
+    .split(/[^a-z0-9]+/)
+    .filter((token) => token.length > 2 && !stopWords.has(token));
+}
+
+function normalizeSearchText(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function getKnowledgeContext(topic = "") {
+  const contextMode = getContextMode(topic);
+  const cacheKey =
+    contextMode === "profiles" ? `${contextMode}:${getSearchTokens(topic).slice(0, 6).join(",")}` : contextMode;
+
+  if (cachedKnowledge.has(cacheKey)) {
+    return cachedKnowledge.get(cacheKey);
   }
 
   const scriptSource = fs.readFileSync(path.join(siteDir, "script.js"), "utf8");
@@ -272,23 +475,21 @@ function getKnowledgeContext() {
     readTextIfExists(path.join(siteDir, "..", "hospital-discharge-project", "README.md"));
   const indexText = htmlToText(readTextIfExists(path.join(siteDir, "index.html")));
   const analyticsText = htmlToText(readTextIfExists(path.join(siteDir, "analytics-project.html")));
+  const selectedProfiles =
+    contextMode === "analytics"
+      ? []
+      : selectRelevantProfiles(digaProfiles, topic).slice(0, contextMode === "profiles" ? 18 : 60);
 
-  cachedKnowledge = [
+  const sections = [
     "Health Tech Scout is an independent DiGA-first research directory and healthcare analytics portfolio project.",
     "DiGA means Digitale Gesundheitsanwendung: a regulated digital health application in Germany listed by BfArM. Many DiGA can be prescribed or reimbursed through statutory health insurance when the official criteria apply.",
     "Health Tech Scout is not medical advice, does not replace a doctor, and does not imply partnership or endorsement.",
     "",
     "MAIN SITE CONTENT",
-    trimForContext(indexText, 5000),
-    "",
-    "HEALTHCARE ANALYTICS PAGE CONTENT",
-    trimForContext(analyticsText, 5000),
+    trimForContext(indexText, contextMode === "analytics" ? 2000 : 4200),
     "",
     "PROJECT README",
-    trimForContext(siteReadme, 2500),
-    "",
-    "HOSPITAL DISCHARGE INTELLIGENCE README",
-    trimForContext(hospitalReadme, 7000),
+    trimForContext(siteReadme, 1800),
     "",
     "DIGA CARE AREA COUNTS",
     Object.entries(profileCountByLens)
@@ -302,23 +503,38 @@ function getKnowledgeContext() {
           `- ${useCase.title}: ${useCase.description} Examples: ${(useCase.examples || []).join(", ")}.`
       )
       .join("\n"),
-    "",
-    "DIGA PROFILES",
-    digaProfiles.map(formatProfile).join("\n"),
-    "",
-    "ADJACENT HEALTHTECH CONTEXT PROFILES",
-    adjacentProfiles.map(formatProfile).join("\n"),
-    "",
-    "ANALYTICS INTERPRETATION RULES",
-    "- The dashboard uses SPARCS 2021 de-identified inpatient discharge data from New York State.",
-    "- It contains about 2.05M records across 202 hospitals and 14 analysis-ready fields after cleaning.",
-    "- It explores cost, charges, length of stay, payer mix, severity, mortality risk, diagnosis groups, and provider-level variation.",
-    "- Selected descriptive signals include an approximately $90K median cost for the diagnosis group 'Effect of foreign body entering opening', 37-day average stay for maltreatment and abuse-related cases, charges around 3-3.5x actual care costs in several service lines, and higher major/extreme mortality-risk share among Medicare discharges than private insurance patients in the dataset view.",
-    "- The analysis is descriptive and for exploration or hypothesis generation only. It should not be presented as causal evidence or medical, reimbursement, or policy advice.",
-    "- The public site context mentions provider-level variation but does not include exact hospital names and per-hospital values. For hospital-specific answers, direct the user to the Power BI dashboard filters.",
-  ].join("\n");
+  ];
 
-  return cachedKnowledge;
+  if (contextMode !== "analytics") {
+    sections.push("", "DIGA PROFILES", selectedProfiles.map(formatProfile).join("\n"));
+  }
+
+  if (contextMode === "full") {
+    sections.push("", "ADJACENT HEALTHTECH CONTEXT PROFILES", adjacentProfiles.map(formatProfile).join("\n"));
+  }
+
+  if (contextMode === "analytics" || contextMode === "full") {
+    sections.push(
+      "",
+      "HEALTHCARE ANALYTICS PAGE CONTENT",
+      trimForContext(analyticsText, 4200),
+      "",
+      "HOSPITAL DISCHARGE INTELLIGENCE README",
+      trimForContext(hospitalReadme, 6200),
+      "",
+      "ANALYTICS INTERPRETATION RULES",
+      "- The dashboard uses SPARCS 2021 de-identified inpatient discharge data from New York State.",
+      "- It contains about 2.05M records across 202 hospitals and 14 analysis-ready fields after cleaning.",
+      "- It explores cost, charges, length of stay, payer mix, severity, mortality risk, diagnosis groups, and provider-level variation.",
+      "- Selected descriptive signals include an approximately $90K median cost for the diagnosis group 'Effect of foreign body entering opening', 37-day average stay for maltreatment and abuse-related cases, charges around 3-3.5x actual care costs in several service lines, and higher major/extreme mortality-risk share among Medicare discharges than private insurance patients in the dataset view.",
+      "- The analysis is descriptive and for exploration or hypothesis generation only. It should not be presented as causal evidence or medical, reimbursement, or policy advice.",
+      "- The public site context mentions provider-level variation but does not include exact hospital names and per-hospital values. For hospital-specific answers, direct the user to the Power BI dashboard filters."
+    );
+  }
+
+  const context = sections.join("\n");
+  cachedKnowledge.set(cacheKey, context);
+  return context;
 }
 
 function parseConstArray(source, name) {
