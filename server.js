@@ -291,6 +291,8 @@ Your job:
 - Use the site context below as your source of truth. You may reason across the context and understand paraphrases. Do not require exact keyword matches.
 - Treat the newest user message as a continuation of the recent conversation when it is a clarification or correction. For example, "diabetes only, not mental health" means that the user is narrowing the previous application list to diabetes and excluding mental-health-only profiles.
 - When listing applications for a condition or care area, include only profiles whose name, tags, care area, or description explicitly matches that condition. Do not add related but different care areas. A program for diabetes that also addresses depressive symptoms belongs in a diabetes answer; a general depression or eating-disorder program does not.
+- Only discuss adjacent or related conditions when the user explicitly asks for related, associated, or adjacent applications. Label those profiles as related, not condition-specific.
+- When the site context has no exact profile match for a condition, say so clearly. Never compensate by listing unrelated profiles from the directory, including women's-health profiles.
 - If the user asks about the analytics dashboard, give simple descriptive interpretation. Do not make causal, medical, reimbursement, or policy claims.
 - If the user asks for a specific hospital/provider figure and the exact figure is not in the context, say that the public site context does not include that exact hospital-level row and suggest opening the Power BI dashboard filters.
 - If the user asks for medical advice, diagnosis, treatment choice, crisis help, or personal health decisions, explain that this website is not medical advice and recommend checking official sources or a qualified clinician.
@@ -751,41 +753,88 @@ function selectRelevantProfiles(profiles, topic) {
 
   const scored = profiles
     .map((profile) => {
-      const haystack = normalizeSearchText(formatProfile(profile));
-      const score = searchableTokens.reduce((total, token) => total + (haystack.includes(token) ? 1 : 0), 0);
+      const directMatchText = normalizeSearchText(
+        [profile.name, profile.lens, ...(profile.tags || [])].filter(Boolean).join(" ")
+      );
+      const descriptiveText = normalizeSearchText([profile.description, profile.manufacturer].filter(Boolean).join(" "));
+      const score = searchableTokens.reduce((total, token) => {
+        if (directMatchText.includes(token)) {
+          return total + 3;
+        }
+
+        return total + (descriptiveText.includes(token) ? 1 : 0);
+      }, 0);
       return { profile, score };
     })
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score || a.profile.name.localeCompare(b.profile.name));
 
-  return scored.length ? scored.map((entry) => entry.profile) : profiles;
+  if (!scored.length) {
+    return [];
+  }
+
+  const minimumRelevantScore = Math.max(3, scored[0].score - 1);
+  return scored.filter((entry) => entry.score >= minimumRelevantScore).map((entry) => entry.profile);
 }
 
 function getSearchTokens(text) {
   const stopWords = new Set([
+    "a",
+    "an",
     "about",
+    "and",
+    "are",
     "apps",
     "application",
     "applications",
+    "available",
     "bei",
+    "can",
     "das",
     "der",
     "die",
     "diga",
+    "do",
     "does",
+    "exist",
+    "exists",
+    "find",
     "for",
+    "from",
     "gibt",
+    "have",
+    "help",
+    "helps",
+    "i",
+    "in",
+    "people",
+    "person",
     "ist",
+    "it",
+    "me",
     "mit",
+    "my",
+    "nenn",
+    "of",
+    "on",
+    "or",
+    "please",
+    "provide",
+    "related",
     "show",
     "the",
+    "tell",
     "there",
+    "to",
+    "with",
     "was",
     "what",
     "which",
     "wie",
     "welche",
     "welcher",
+    "you",
+    "your",
   ]);
 
   return normalizeSearchText(text)
@@ -856,7 +905,13 @@ function getKnowledgeContext(topic = "") {
   ];
 
   if (contextMode !== "analytics") {
-    sections.push("", "DIGA PROFILES", selectedProfiles.map(formatProfile).join("\n"));
+    sections.push(
+      "",
+      "DIGA PROFILES",
+      selectedProfiles.length
+        ? selectedProfiles.map(formatProfile).join("\n")
+        : "No listed DiGA profile explicitly matches the requested condition. Do not list profiles from other care areas."
+    );
   }
 
   if (contextMode === "full") {
