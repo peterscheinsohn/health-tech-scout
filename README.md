@@ -12,13 +12,24 @@ Health Tech Scout is designed as a practical research asset:
 
 ## Publish Options
 
-This folder can be published with GitHub Pages or uploaded as static files to the current `healthtechscout.de` hosting.
+The static pages can be published with GitHub Pages or uploaded as static files.
 
-No build step is required. Open `index.html` directly or serve the folder locally:
+The AI assistant needs a small server because the Gemini API key must not be exposed in browser JavaScript.
+Run the site locally with:
 
 ```bash
-python3 -m http.server 8000
+npm run dev
 ```
+
+Create `.env.local` from `.env.example` and set `GEMINI_API_KEY`. The default model is `gemini-3.5-flash`.
+
+For Vercel, add the same variables in Project Settings -> Environment Variables:
+
+- `GEMINI_API_KEY`
+- `GEMINI_MODEL` (optional, defaults to `gemini-3.5-flash`)
+
+The chat endpoint is `POST /api/chat`. It answers from the local site content, DiGA profiles, care-area cards, and the
+Hospital Discharge Intelligence project notes.
 
 ## Notes Before Production
 
