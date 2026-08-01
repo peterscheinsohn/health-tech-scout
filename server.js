@@ -125,6 +125,37 @@ async function handleChat(req, res) {
 }
 
 async function createChatResponse(payload) {
+  const message = String(payload.message || "").trim();
+  const history = Array.isArray(payload.history) ? payload.history.slice(-8) : [];
+  const pageContext = normalizePageContext(payload);
+
+  if (!message) {
+    return {
+      status: 400,
+      body: { error: "Message is required." },
+    };
+  }
+
+  if (isGreetingOnly(message)) {
+    return {
+      status: 200,
+      body: {
+        answer: buildGreetingAnswer(message),
+        model: geminiModel,
+      },
+    };
+  }
+
+  if (!isSiteRelevantQuestion(message, history, pageContext)) {
+    return {
+      status: 200,
+      body: {
+        answer: buildOutOfScopeAnswer(message),
+        model: geminiModel,
+      },
+    };
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey || apiKey === "your_gemini_api_key_here") {
@@ -135,17 +166,6 @@ async function createChatResponse(payload) {
         answer:
           "The assistant is installed, but the Gemini API key is not configured yet. Add GEMINI_API_KEY on the server to activate live answers.",
       },
-    };
-  }
-
-  const message = String(payload.message || "").trim();
-  const history = Array.isArray(payload.history) ? payload.history.slice(-8) : [];
-  const pageContext = normalizePageContext(payload);
-
-  if (!message) {
-    return {
-      status: 400,
-      body: { error: "Message is required." },
     };
   }
 
@@ -261,6 +281,7 @@ Your job:
 - If the user asks for a specific hospital/provider figure and the exact figure is not in the context, say that the public site context does not include that exact hospital-level row and suggest opening the Power BI dashboard filters.
 - If the user asks for medical advice, diagnosis, treatment choice, crisis help, or personal health decisions, explain that this website is not medical advice and recommend checking official sources or a qualified clinician.
 - Do not invent DiGA names, statistics, hospital names, reimbursement rules, evidence claims, or partnerships.
+- If the question is outside this website's scope, say that you only answer questions about Health Tech Scout, DiGA, DiGA profiles, care areas, and the Hospital Discharge Intelligence analytics project.
 - Write like a concise site guide, not like a README or report. Do not copy full source sections.
 - Default to 3-6 short sentences. Use bullets only when the user asks for examples, options, findings, or a comparison.
 - If the user asks "tell me about this project", "what is it about", or a similar summary question, answer in 3-4 sentences with no headings and no links.
@@ -288,6 +309,102 @@ function normalizePageContext(payload) {
   const pageTitle = String(payload.pageTitle || "").slice(0, 160);
 
   return [pageTitle && `Title: ${pageTitle}`, page && `Path: ${page}`].filter(Boolean).join("\n");
+}
+
+function isGreetingOnly(message) {
+  return /^(hi|hello|hey|hallo|guten tag|guten morgen|guten abend|servus|moin)[!.?\s]*$/i.test(
+    normalizeSearchText(message)
+  );
+}
+
+function buildGreetingAnswer(message) {
+  if (isGermanQuestion(message)) {
+    return "Hallo. Ich kann Fragen zu Health Tech Scout, DiGA, DiGA-Profilen, Care Areas und dem Hospital Discharge Intelligence Projekt beantworten.";
+  }
+
+  return "Hi. I can answer questions about Health Tech Scout, DiGA, DiGA profiles, care areas, and the Hospital Discharge Intelligence project.";
+}
+
+function isSiteRelevantQuestion(message, history = [], pageContext = "") {
+  const question = normalizeSearchText(message);
+  const context = normalizeSearchText(pageContext);
+
+  if (hasObviousOffTopicEntity(question) && !hasStrongSiteTopic(question) && !mentionsKnownProfile(question)) {
+    return false;
+  }
+
+  if (hasStrongSiteTopic(question) || mentionsKnownProfile(question)) {
+    return true;
+  }
+
+  if (hasWeakSiteTopic(question) && !hasObviousOffTopicEntity(question)) {
+    return true;
+  }
+
+  if (isProjectSummaryQuestion(question) && hasStrongSiteTopic(context)) {
+    return true;
+  }
+
+  if (isContextualFollowUp(question) && (hasStrongSiteTopic(context) || hasRecentSiteContext(history))) {
+    return true;
+  }
+
+  return false;
+}
+
+function buildOutOfScopeAnswer(message) {
+  if (isGermanQuestion(message)) {
+    return "Entschuldigung, ich beantworte nur Fragen zu Health Tech Scout, DiGA, DiGA-Profilen, Care Areas und dem Hospital Discharge Intelligence Projekt. Diese Frage gehoert nicht zum Inhalt dieser Website. Bitte nutze Google oder eine andere Suchmaschine.";
+  }
+
+  return "Sorry, I only answer questions about Health Tech Scout, DiGA, DiGA profiles, care areas, and the Hospital Discharge Intelligence project. This question is outside the scope of this website. Please use Google or another search engine.";
+}
+
+function hasRecentSiteContext(history) {
+  return history.some((entry) => entry && hasStrongSiteTopic(normalizeSearchText(entry.content || "")));
+}
+
+function isContextualFollowUp(question) {
+  return /(it|this|that|these|those|here|project|dashboard|site|page|profile|profiles|them|they|limitations|limits|signals|sources|links|summary|more|details|dies|das|diese|dieses|hier|projekt|profil|profile|grenzen|signale|quellen|mehr)/i.test(
+    question
+  );
+}
+
+function hasStrongSiteTopic(text) {
+  return /(health tech scout|healthtech|healthscout|scout bot|diga|digitale gesundheitsanwendung|bfarm|digital health application|manufacturer|hersteller|care area|care areas|indication|indications|listed application|preliminary diga|reimbursement|statutory health insurance|krankenkasse|erstattung|verzeichnis|hospital discharge|discharge intelligence|sparcs|power bi|dashboard|analytics|payer|provider|length of stay|mortality|charges|costs|kosten|aufenthalt|entlass|diagnosis|diagnose|severity|peter scheinsohn)/i.test(
+    text
+  );
+}
+
+function hasWeakSiteTopic(text) {
+  return /(this site|this website|website|site|this project|that project|this page|healthcare analytics|healthtech|portfolio|author|about you|who built)/i.test(
+    text
+  );
+}
+
+function hasObviousOffTopicEntity(text) {
+  return /(angela|merkel|trump|biden|putin|scholz|weather|forecast|football|soccer|recipe|pizza|capital of|population of|stock price|bitcoin|elon|musk)/i.test(
+    text
+  );
+}
+
+function mentionsKnownProfile(text) {
+  const profiles = getDigaProfiles();
+
+  return profiles.some((profile) => {
+    const values = [profile.name, profile.manufacturer, ...(profile.tags || [])]
+      .filter(Boolean)
+      .map(normalizeSearchText)
+      .filter((value) => value.length > 3);
+
+    return values.some((value) => text.includes(value));
+  });
+}
+
+function isGermanQuestion(message) {
+  return /\b(wer|was|wie|wo|wohnt|welche|welcher|welches|gibt|ist|sind|kann|koennen|bitte|frage|fragen|analyse|krankenhaus|kosten|aufenthalt|entlassung|fuer|ueber|gehoert|nicht)\b/i.test(
+    normalizeSearchText(message)
+  );
 }
 
 function cleanAssistantAnswer(answer, message) {
