@@ -156,6 +156,18 @@ async function createChatResponse(payload) {
     };
   }
 
+  const scopedProfileAnswer = buildScopedProfileAnswer(message, history);
+
+  if (scopedProfileAnswer) {
+    return {
+      status: 200,
+      body: {
+        answer: scopedProfileAnswer,
+        model: geminiModel,
+      },
+    };
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey || apiKey === "your_gemini_api_key_here") {
@@ -264,7 +276,7 @@ async function askGemini(prompt, apiKey) {
 }
 
 function buildGeminiPrompt(message, history, pageContext = "") {
-  const context = getKnowledgeContext(`${message} ${pageContext}`);
+  const context = getKnowledgeContext(getConversationTopic(message, history, pageContext));
   const conversation = history
     .filter((entry) => entry && typeof entry.content === "string")
     .map((entry) => `${entry.role === "assistant" ? "Assistant" : "User"}: ${entry.content}`)
@@ -277,6 +289,8 @@ Your job:
 - Answer questions about DiGA, the Health Tech Scout directory, care areas, listed applications, manufacturers, and the Hospital Discharge Intelligence analytics project.
 - Answer in German when the user writes German. Answer in English when the user writes English.
 - Use the site context below as your source of truth. You may reason across the context and understand paraphrases. Do not require exact keyword matches.
+- Treat the newest user message as a continuation of the recent conversation when it is a clarification or correction. For example, "diabetes only, not mental health" means that the user is narrowing the previous application list to diabetes and excluding mental-health-only profiles.
+- When listing applications for a condition or care area, include only profiles whose name, tags, care area, or description explicitly matches that condition. Do not add related but different care areas. A program for diabetes that also addresses depressive symptoms belongs in a diabetes answer; a general depression or eating-disorder program does not.
 - If the user asks about the analytics dashboard, give simple descriptive interpretation. Do not make causal, medical, reimbursement, or policy claims.
 - If the user asks for a specific hospital/provider figure and the exact figure is not in the context, say that the public site context does not include that exact hospital-level row and suggest opening the Power BI dashboard filters.
 - If the user asks for medical advice, diagnosis, treatment choice, crisis help, or personal health decisions, explain that this website is not medical advice and recommend checking official sources or a qualified clinician.
@@ -368,6 +382,15 @@ function isContextualFollowUp(question) {
   return /(it|this|that|these|those|here|project|dashboard|site|page|profile|profiles|them|they|limitations|limits|signals|sources|links|summary|more|details|dies|das|diese|dieses|hier|projekt|profil|profile|grenzen|signale|quellen|mehr)/i.test(
     question
   );
+}
+
+function getConversationTopic(message, history = [], pageContext = "") {
+  const recentUserMessages = history
+    .filter((entry) => entry && entry.role !== "assistant" && typeof entry.content === "string")
+    .slice(-3)
+    .map((entry) => entry.content);
+
+  return [message, ...recentUserMessages, pageContext].join(" ");
 }
 
 function hasStrongSiteTopic(text) {
@@ -520,6 +543,117 @@ function buildFallbackAnswer(message, pageContext = "") {
     : "I can answer questions about DiGA, care areas, company profiles, and the Hospital Discharge Analytics project. Please ask a slightly more specific question.";
 }
 
+function buildScopedProfileAnswer(message, history = []) {
+  const scope = getRequestedProfileScope(message, history);
+
+  if (!scope || !isProfileListRequest(message, history)) {
+    return "";
+  }
+
+  const profiles = getDigaProfiles().filter((profile) => scope.matches(profile));
+  const isGerman = isGermanQuestion(message);
+  const excludesOtherCareAreas = isCareAreaCorrection(normalizeSearchText(message));
+
+  if (!profiles.length) {
+    return isGerman
+      ? `Im aktuellen Health Tech Scout Verzeichnis finde ich keine DiGA mit einer klaren Zuordnung zu ${scope.germanLabel}. Ich nenne deshalb keine verwandten Anwendungen aus anderen Care Areas.`
+      : `I cannot find a DiGA in the current Health Tech Scout directory that is explicitly tagged for ${scope.englishLabel}. I will not substitute applications from a related care area.`;
+  }
+
+  if (isGerman) {
+    return [
+      `Fuer ${scope.germanLabel} sind im aktuellen Health Tech Scout Verzeichnis diese DiGA-Profile markiert:`,
+      "",
+      ...profiles.map((profile) => `- ${profile.name}: ${shortProfileDescription(profile, true)}`),
+      "",
+      ...(excludesOtherCareAreas
+        ? ["Ich habe keine reinen Mental-Health-, Essstoerungs- oder Women's-Health-Anwendungen in diese Liste aufgenommen."]
+        : []),
+      "Das ist keine medizinische Empfehlung.",
+    ].join("\n");
+  }
+
+  return [
+    `For ${scope.englishLabel}, the current Health Tech Scout directory marks these DiGA profiles:`,
+    "",
+    ...profiles.map((profile) => `- ${profile.name}: ${shortProfileDescription(profile)}`),
+    "",
+    ...(excludesOtherCareAreas
+      ? ["I have not included mental-health-only, eating-disorder, or women's-health applications in this list."]
+      : []),
+    "This is not medical advice.",
+  ].join("\n");
+}
+
+function getRequestedProfileScope(message, history = []) {
+  const currentQuestion = normalizeSearchText(message);
+  const recentUserText = history
+    .filter((entry) => entry && entry.role !== "assistant" && typeof entry.content === "string")
+    .slice(-3)
+    .map((entry) => normalizeSearchText(entry.content))
+    .join(" ");
+  const subject = `${currentQuestion} ${recentUserText}`;
+
+  const scopes = [
+    {
+      englishLabel: "diabetes",
+      germanLabel: "Diabetes",
+      matches: (profile) => /diabetes|diabetic|type 1|type 2/.test(normalizeSearchText(formatProfile(profile))),
+      terms: /diabetes|diabetic|type 1|type 2/,
+    },
+    {
+      englishLabel: "anxiety and panic disorders",
+      germanLabel: "Angst- und Panikstoerungen",
+      matches: (profile) => /anxiety|angst|panic|panik|phobia|phobie|agoraphobia|agoraphobie/.test(normalizeSearchText(formatProfile(profile))),
+      terms: /anxiety|angst|panic|panik|phobia|phobie|agoraphobia|agoraphobie/,
+    },
+    {
+      englishLabel: "depression",
+      germanLabel: "Depression",
+      matches: (profile) => /depression|depressive/.test(normalizeSearchText(formatProfile(profile))),
+      terms: /depression|depressive/,
+    },
+  ];
+
+  return scopes.find((scope) => scope.terms.test(currentQuestion)) ||
+    (isCareAreaCorrection(currentQuestion) ? scopes.find((scope) => scope.terms.test(subject)) : undefined);
+}
+
+function isProfileListRequest(message, history = []) {
+  const question = normalizeSearchText(message);
+
+  if (/(which|what|list|show|give|apps?|applications?|diga|welche|welcher|liste|zeig|nenn|anwendungen?)/i.test(question)) {
+    return true;
+  }
+
+  return isCareAreaCorrection(question) && history.some((entry) => entry && entry.role !== "assistant");
+}
+
+function isCareAreaCorrection(question) {
+  return /\b(only|not|instead|rather|nur|nicht|sondern)\b/i.test(question);
+}
+
+function shortProfileDescription(profile, isGerman = false) {
+  if (isGerman) {
+    const germanDescriptions = {
+      "glucura Diabetestherapie":
+        "DiGA zur Therapie bei Typ-2-Diabetes mit personalisierten Ernaehrungs- und Lebensstilanpassungen.",
+      "HelloBetter Diabetes":
+        "Programm fuer Menschen mit Typ-1- oder Typ-2-Diabetes und depressiven Symptomen. Es ist diabetes-spezifisch und keine allgemeine Depressions-DiGA.",
+      Vitadio:
+        "DiGA fuer Typ-2-Diabetes zur Unterstuetzung von Selbstmanagement und Lebensstilveraenderung.",
+    };
+
+    if (germanDescriptions[profile.name]) {
+      return germanDescriptions[profile.name];
+    }
+  }
+
+  const description = String(profile.description || "").trim();
+  const firstSentence = description.match(/^.*?[.!?](?:\s|$)/)?.[0] || description;
+  return firstSentence.replace(/\s+/g, " ").trim();
+}
+
 function looksIncomplete(answer) {
   const text = String(answer || "").trim();
 
@@ -541,7 +675,7 @@ function getContextMode(topic) {
     return "analytics";
   }
 
-  if (/(company|manufacturer|profile|diga|care area|indication|angst|anxiety|panic|phobia|depression|sleep|pain|provider|hersteller|krankheit|indikation)/i.test(
+  if (/(company|manufacturer|profile|diga|care area|indication|angst|anxiety|panic|phobia|depression|sleep|pain|diabetes|diabetic|type 1|type 2|obesity|adipositas|cancer|oncology|endometriosis|endometriose|incontinence|inkontinenz|tinnitus|provider|hersteller|krankheit|indikation)/i.test(
     normalizedTopic
   )) {
     return "profiles";
