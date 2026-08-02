@@ -168,6 +168,18 @@ async function createChatResponse(payload) {
     };
   }
 
+  const siteOverviewAnswer = buildSiteOverviewAnswer(message);
+
+  if (siteOverviewAnswer) {
+    return {
+      status: 200,
+      body: {
+        answer: siteOverviewAnswer,
+        model: geminiModel,
+      },
+    };
+  }
+
   const scopedProfileAnswer = buildScopedProfileAnswer(message, history);
 
   if (scopedProfileAnswer) {
@@ -378,6 +390,10 @@ function isSiteRelevantQuestion(message, history = [], pageContext = "") {
     return true;
   }
 
+  if (isSiteOverviewQuestion(question)) {
+    return true;
+  }
+
   if (hasWeakSiteTopic(question) && !hasObviousOffTopicEntity(question)) {
     return true;
   }
@@ -466,7 +482,7 @@ function mentionsKnownProfile(text) {
 }
 
 function isGermanQuestion(message) {
-  return /\b(wer|was|wie|wo|wohnt|welche|welcher|welches|gibt|ist|sind|kann|koennen|bitte|frage|fragen|analyse|krankenhaus|kosten|aufenthalt|entlassung|fuer|ueber|gehoert|nicht)\b/i.test(
+  return /\b(wer|was|wie|wo|wohnt|welche|welcher|welches|gibt|ist|sind|kann|koennen|bitte|frage|fragen|analyse|krankenhaus|kosten|aufenthalt|entlassung|fuer|ueber|gehoert|nicht|worum|geht|seite|webseite|erzaehl)\b/i.test(
     normalizeSearchText(message)
   );
 }
@@ -688,7 +704,7 @@ function getRequestedProfileScope(message, history = []) {
 function isProfileListRequest(message, history = []) {
   const question = normalizeSearchText(message);
 
-  if (isDigaDefinitionQuestion(question)) {
+  if (isDigaDefinitionQuestion(question) || isSiteOverviewQuestion(question)) {
     return false;
   }
 
@@ -772,6 +788,26 @@ function isProjectSummaryQuestion(question) {
   return /(tell me about|what is it about|what is this project|what is that project|about this project|about that project|summari[sz]e|short summary|kurz|zusammenfassung|worum geht|was ist das projekt|erzaehl)/i.test(
     question
   );
+}
+
+function isSiteOverviewQuestion(question) {
+  return /(what is this site|what is this website|what is the site|what is the website|what does this site do|what does this website do|what can i find here|tell me about (this )?(site|website|page)|what is health ?tech scout|what is healthscout|please tell me about.*\bsite\b|worum geht es auf dieser (web)?seite|was bietet diese (web)?seite|was ist health ?tech scout|erzaehl mir von dieser (web)?seite)/i.test(
+    question
+  );
+}
+
+function buildSiteOverviewAnswer(message) {
+  const question = normalizeSearchText(message);
+
+  if (!isSiteOverviewQuestion(question)) {
+    return "";
+  }
+
+  if (isGermanQuestion(message)) {
+    return "Health Tech Scout ist ein unabhaengiges Healthcare-Projekt ueber digitale Gesundheitsanwendungen in Deutschland. Die Website hilft dabei, DiGA-Profile, Hersteller und Versorgungsbereiche zu erkunden. Ausserdem zeigt sie das Hospital Discharge Intelligence Projekt, ein deskriptives Analytics-Projekt zu Krankenhaus-Entlassungsdaten. Der AI-Assistent kann Fragen zu diesen Inhalten auf Deutsch und Englisch beantworten.";
+  }
+
+  return "Health Tech Scout is an independent healthcare project about digital health applications in Germany. The site helps you explore DiGA profiles, manufacturers, and care areas. It also presents the Hospital Discharge Intelligence project, a descriptive analysis of hospital discharge data. The AI assistant can answer questions about these topics in English and German.";
 }
 
 function isDigaDefinitionQuestion(question) {
