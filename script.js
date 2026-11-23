@@ -743,6 +743,9 @@ function matchesProfile(profile, query) {
     profile.useCase ?? "",
     profile.description ?? "",
     getTags(profile).join(" "),
+    window.homepageTranslations?.[profile.description] ?? "",
+    window.homepageTranslations?.[profile.lens] ?? "",
+    getTags(profile).map((tag) => window.homepageTranslations?.[tag] ?? "").join(" "),
   ]
     .join(" ")
     .toLowerCase();

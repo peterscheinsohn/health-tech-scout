@@ -27,6 +27,68 @@ const mimeTypes = new Map([
 
 const cachedKnowledge = new Map();
 
+const HEALTH_NEEDS = {
+  smoking: { names: ["NichtraucherHelden-App", "Smoke Free - Rauchen aufhoeren"], pattern: /smok|cigarette|tobacco|rauch|zigarett|никотин|курени|курить|курю|сигарет/i },
+  sleep: { names: ["HelloBetter Schlafen", "somnio", "somnovia"], pattern: /sleep|insomnia|schlaf|einschlaf|durchschlaf|бессонниц|спать|не сплю|плохо сплю|(?:для|проблемы со|нарушения) сна/i },
+  weight: { names: ["Oviva Direkt fuer Adipositas", "zanadio"], pattern: /overweight|obes|weight|lose pounds|uebergewicht|abnehmen|gewicht|adipositas|лишн.{0,10}вес|похуд|ожирени/i },
+  stress: { names: ["HelloBetter Stress und Burnout"], pattern: /stress|burnout|overwhelmed|burned out|burnt out|стресс|выгора|выгорел/i },
+  type1: { names: ["HelloBetter Diabetes"], pattern: /(?:type|typ)[ -]?1.{0,20}diabet|diabet.{0,20}(?:type|typ)[ -]?1|диабет.{0,15}1.{0,10}тип|диабет 1/i },
+  vaginismus: { names: ["HelloBetter Vaginismus Plus"], pattern: /vaginismus|vaginism|вагинизм/i },
+  erectile: { names: ["Kranus Edera"], pattern: /erectile dysfunction|erection problems?|erektionsstoerung|эректильн.{0,15}дисфункц|проблем.{0,15}эрекци/i },
+};
+
+function isClarificationQuestion(text) {
+  return /what (?:kind of )?(?:support|help)|what would you like help|which health concern|what health concern|could you tell me a little more|wobei moechtest du|wobei.*unterstuetzung|bei welchem gesundheitlichen anliegen|magst du etwas mehr|с чем именно|с какой проблемой здоровья|подробнее, что вас беспокоит/i.test(normalizeSearchText(text));
+}
+
+function resolveConversationSubject(message, history) {
+  const turns = history.filter((entry) => entry && typeof entry.content === "string" && (entry.role === "user" || entry.role === "assistant"));
+  if (turns.at(-1)?.role === "user" && turns.at(-1).content.trim() === message) turns.pop();
+  const last = turns.at(-1);
+  const previous = [...turns].reverse().find((entry) => entry.role === "user")?.content || "";
+  const shortFollowUp = /^(which ones|what are they|welche davon|welche|какие|расскажи подробнее)[.!?\s]*$/i.test(message);
+  if (!previous || !(shortFollowUp || last?.role === "assistant" && isClarificationQuestion(last.content))) return message;
+  // A clear new topic supersedes older context rather than accumulating unrelated conditions.
+  const currentNeeds = resolveHealthNeeds(message);
+  const earlierNeeds = resolveHealthNeeds(previous);
+  if (currentNeeds.length === 1 && earlierNeeds.length > 1 && earlierNeeds.includes(currentNeeds[0])) return message;
+  if (currentNeeds.length && earlierNeeds.length && !currentNeeds.some((need) => earlierNeeds.includes(need))) return message;
+  return `${previous}\n${message}`;
+}
+
+function resolveHealthNeeds(message) {
+  const text = normalizeSearchText(message);
+  const withoutNegativeSmoking = text.replace(/(?:i do not|i don't|i dont|i never|ich rauche nicht|ich bin kein raucher|не курю)\s+smoke\b/g, "");
+  const result = Object.entries(HEALTH_NEEDS).filter(([, item]) => item.pattern.test(withoutNegativeSmoking)).map(([name]) => name);
+  if (result.includes("sleep") && /(?:i do not smoke|i don't smoke|i dont smoke|ich rauche nicht|не курю)/i.test(text)) return result.filter((name) => name !== "smoking");
+  return result;
+}
+
+// Conservative triage, not diagnosis: uncertain substance use is clarified before app suggestions.
+function assessHealthSafety(message, lang) {
+  const text = normalizeSearchText(message);
+  const urgent = /\b(chest pain|can't breathe|cannot breathe|difficulty breathing|unconscious|seizure|overdose|kill myself|suicid|brustschmerzen|atemnot|bewusstlos|krampfanfall|selbstmord)\b|боль в груди|не могу дышать|без сознания|судорог|покончить с собой|суицид/i.test(text);
+  if (urgent) return {
+    en: "This could be an emergency. Call 112 in Germany now, or your local emergency number. Do not rely on an app. If possible, ask someone nearby to stay with you.",
+    de: "Das könnte ein Notfall sein. Ruf in Deutschland jetzt 112 an oder die örtliche Notrufnummer. Verlass dich nicht auf eine App. Bitte wenn möglich jemanden, bei dir zu bleiben.",
+    ru: "Это может быть экстренная ситуация. Позвоните 112 в Германии или по местному номеру экстренной помощи. Не полагайтесь на приложение. По возможности попросите кого-то побыть рядом."
+  }[lang];
+  const alcohol = /\b(alcohol|vodka|whisk(?:y|ey)|wine|beer|booze|drink(?:ing|s)?|alkohol|wodka|wein|bier|trinke[nst]?|betrunken)\b|алкогол|водк|вино|пив[ао]|выпива|пью|пьян/i.test(text);
+  const negativeAlcohol = /\b(?:do not|don't|dont|never)\s+drink(?:\s+alcohol)?\b|\b(?:trinke keinen alkohol|kein alkohol|trinke nicht)\b|не пью(?: алкоголь)?/i.test(text);
+  const substance = /\b(opioids?|heroin|cocaine|cannabis|benzodiazepines?|sleeping pills|schlaftabletten|drogen|heroin|kokain)\b|наркотик|героин|кокаин|снотворн/i.test(text);
+  const needs = resolveHealthNeeds(message);
+  if ((alcohol && !negativeAlcohol || substance) && (needs.length || /help|problem|concern|too much|daily|every day|depend|withdraw|hilfe|problem|taeglich|entzug|помо|проблем|каждый день|завис|отмен/i.test(text))) {
+    const sleep = needs.includes('sleep');
+    const notes = {
+      en: `${sleep ? 'You mention difficulty sleeping as well as ' : 'You mention '}${alcohol && !negativeAlcohol ? 'alcohol' : 'substance or medication use'}. These may be connected. ${sleep ? 'A sleep app alone cannot address the potential risk. ' : ''}Please speak with a doctor or addiction support service promptly. If you drink heavily or regularly, seek medical advice before stopping suddenly: withdrawal can be dangerous.`,
+      de: `${sleep ? 'Du beschreibst Schlafprobleme und ' : 'Du erwähnst '}${alcohol && !negativeAlcohol ? 'Alkoholkonsum' : 'Substanz- oder Medikamentenkonsum'}. Das kann zusammenhängen. ${sleep ? 'Eine Schlaf-App allein kann das mögliche Risiko nicht behandeln. ' : ''}Bitte wende dich zeitnah an eine Ärztin, einen Arzt oder eine Suchtberatungsstelle. Wenn du viel oder regelmäßig trinkst, hole vor einem plötzlichen Aufhören ärztlichen Rat ein: Ein Entzug kann gefährlich sein.`,
+      ru: `${sleep ? 'Вы описываете проблемы со сном и ' : 'Вы упоминаете '}${alcohol && !negativeAlcohol ? 'употребление алкоголя' : 'употребление веществ или лекарств'}. Это может быть связано. ${sleep ? 'Одного приложения для сна недостаточно, чтобы устранить возможный риск. ' : ''}Пожалуйста, как можно скорее обратитесь к врачу или в службу помощи. Если вы пьёте много или регулярно, обратитесь за медицинской консультацией, прежде чем резко прекращать: отмена может быть опасной.`
+    };
+    return notes[lang];
+  }
+  return "";
+}
+
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -136,6 +198,74 @@ async function createChatResponse(payload) {
     };
   }
 
+  const turns = history.filter((entry) => entry && typeof entry.content === "string" && (entry.role === "user" || entry.role === "assistant"));
+  if (turns.at(-1)?.role === "user" && turns.at(-1).content.trim() === message) turns.pop();
+  const lastAssistant = turns.at(-1)?.role === "assistant" ? turns.at(-1).content : "";
+  const shortReply = /^(yes|yeah|yep|sure|no|no thanks|ja|nein|да|нет|конечно)[.!?\s]*$/i.test(message);
+  const languageText = shortReply && !/[а-яё]/i.test(message) && /^(ja|nein)/i.test(message) ? "ich" : shortReply && lastAssistant && !/[а-яё]/i.test(message) && !/^(yes|yeah|yep|sure|no)/i.test(message) ? lastAssistant : message;
+  const lang = /на русском|in russian/i.test(languageText) || /[а-яё]/i.test(languageText) && !/answer in english|auf deutsch/i.test(languageText) ? "ru" : isGermanQuestion(languageText) ? "de" : "en";
+  const normalized = normalizeSearchText(message);
+  const isYes = /^(yes|yeah|yep|sure|ja|да|конечно)[.!?\s]*$/i.test(message);
+  const isNo = /^(no|no thanks|nein|нет)[.!?\s]*$/i.test(message);
+  const appOffer = /\b(would you like|shall i|can i|moechtest du|soll ich)\b[^?]*(?:app|anwendung|diga)|(?:хотите|показать|найти)[^?]*(?:приложени|дига)/i.test(normalizeSearchText(lastAssistant));
+  const offerNeeds = appOffer ? resolveHealthNeeds(lastAssistant) : [];
+  const context = resolveConversationSubject(message, history);
+  const subject = isYes && appOffer && offerNeeds.length === 1 ? lastAssistant : context;
+  const safetyAnswer = assessHealthSafety(subject, lang);
+  if (safetyAnswer) return { status: 200, body: { answer: safetyAnswer, model: geminiModel } };
+  if (shortReply && lastAssistant.includes("?")) {
+    if (isNo) {
+      const answers = { en: "Of course. Is there another health concern you would like help with?", de: "Natürlich. Gibt es ein anderes gesundheitliches Anliegen, bei dem du Unterstützung möchtest?", ru: "Конечно. Есть ли другая проблема со здоровьем, с которой вам нужна помощь?" };
+      return { status: 200, body: { answer: answers[lang], model: geminiModel } };
+    }
+    if (isYes && (!appOffer || offerNeeds.length !== 1)) {
+      const answers = { en: "What health concern would you like help with?", de: "Bei welchem gesundheitlichen Anliegen möchtest du Unterstützung?", ru: "С какой проблемой здоровья вам нужна помощь?" };
+      return { status: 200, body: { answer: answers[lang], model: geminiModel } };
+    }
+  }
+  const needs = resolveHealthNeeds(subject);
+  const genericHealth = /\b(health problem|health issue|feel(?:ing)? better|stop this habit|tired all the time|gesundheit|beschwerden|problem mit meiner gesundheit)\b/i.test(normalized) || /здоров|самочувств|плохо себя чувств|хочу помощи/i.test(message);
+  if (needs.length > 1 || genericHealth && !needs.length) {
+    const answers = { en: 'Which health concern would you like help with first?', de: 'Bei welchem gesundheitlichen Anliegen möchtest du zuerst Unterstützung?', ru: 'С какой проблемой здоровья вы хотите разобраться в первую очередь?' };
+    if (needs.length > 1) {
+      const labels = { en: { sleep: 'sleep', smoking: 'smoking', stress: 'stress', weight: 'weight', type1: 'type 1 diabetes', vaginismus: 'vaginismus', erectile: 'erectile difficulties' }, de: { sleep: 'Schlaf', smoking: 'Rauchen', stress: 'Stress', weight: 'Gewicht', type1: 'Typ-1-Diabetes', vaginismus: 'Vaginismus', erectile: 'Erektionsprobleme' }, ru: { sleep: 'сон', smoking: 'курение', stress: 'стресс', weight: 'вес', type1: 'диабет 1 типа', vaginismus: 'вагинизм', erectile: 'проблемы с эрекцией' } };
+      const list = needs.map((need) => labels[lang][need]).join(', ');
+      const prefix = { en: `You mention several concerns: ${list}. These may be related. `, de: `Du erwähnst mehrere Anliegen: ${list}. Sie könnten zusammenhängen. `, ru: `Вы упоминаете несколько проблем: ${list}. Они могут быть связаны. ` };
+      return { status: 200, body: { answer: prefix[lang] + answers[lang], model: geminiModel } };
+    }
+    return { status: 200, body: { answer: answers[lang], model: geminiModel } };
+  }
+  if (needs.length === 1) {
+    const need = needs[0];
+    const names = HEALTH_NEEDS[need].names;
+    const profiles = getDigaProfiles().filter((profile) => names.includes(profile.name));
+    const negated = !(isYes && appOffer) && /(?:do not|don't|dont|never|not|nicht|kein|keine|не хочу|не нужно|не курю).{0,45}(?:quit|stop|smok|rauch|zigarett|брос|кур)/i.test(subject);
+    const intro = negated && need === "smoking" ? {
+      en: "You do not have to decide to quit. Would you like me to find an app for reducing or quitting smoking?",
+      de: "Du musst dich nicht zum Aufhören entscheiden. Soll ich eine Anwendung zur Reduzierung oder zum Aufhören mit dem Rauchen suchen?",
+      ru: "Вам не обязательно решать бросить курить. Хотите, я найду приложение для сокращения курения или отказа от него?"
+    } : {
+      en: "These applications in the local catalogue may be relevant. Check their official indications and suitability with a healthcare professional:",
+      de: "Diese Anwendungen im lokalen Verzeichnis könnten relevant sein. Bitte prüfe die offiziellen Indikationen und die Eignung mit medizinischem Fachpersonal:",
+      ru: "Эти приложения из локального каталога могут быть полезны. Проверьте официальные показания и пригодность со специалистом:"
+    };
+    if (negated && need === "smoking") return { status: 200, body: { answer: intro[lang], model: geminiModel } };
+    const noMatch = { en: "I cannot find a matching application in the local catalogue.", de: "Ich finde keine passende Anwendung im lokalen Verzeichnis.", ru: "В локальном каталоге нет подходящего приложения." };
+    return { status: 200, body: { answer: profiles.length ? [intro[lang], ...profiles.map((profile) => `- ${profile.name}: ${profile.source}`)].join('\n') : noMatch[lang], model: geminiModel } };
+  }
+
+  // General sexual or psychological support is broader than the catalogue's specific indications.
+  const sexualConcern = /sex|intim|sexual|sexualitaet|sexuell|секс|интим|сексуаль/i.test(subject);
+  const supportSpecified = /psycholog|mental|therapy|therap|support|beratung|психолог|психическ|поддержк|терап/i.test(message);
+  if (sexualConcern && supportSpecified) {
+    const answers = {
+      en: "I cannot find an application in the local catalogue specifically for general psychological support with sexual concerns. The directory includes apps for specific conditions, but your message does not establish those indications. A qualified therapist or sexual health professional may be able to help.",
+      de: "Ich finde im lokalen Verzeichnis keine Anwendung speziell für allgemeine psychologische Unterstützung bei sexuellen Anliegen. Es gibt Anwendungen für bestimmte Erkrankungen, aber aus deiner Nachricht lässt sich keine solche Indikation ableiten. Eine psychotherapeutische oder sexualmedizinische Fachperson kann unterstützen.",
+      ru: "В локальном каталоге я не нашёл приложения именно для общей психологической поддержки по вопросам сексуальности. В каталоге есть приложения для отдельных состояний, но из вашего сообщения нельзя установить такие показания. Можно обратиться к психотерапевту или специалисту по сексуальному здоровью."
+    };
+    return { status: 200, body: { answer: answers[lang], model: geminiModel } };
+  }
+
   if (isGreetingOnly(message)) {
     return {
       status: 200,
@@ -159,6 +289,10 @@ async function createChatResponse(payload) {
   }
 
   if (!isSiteRelevantQuestion(message, history, pageContext)) {
+    if (!hasObviousOffTopicEntity(normalized)) {
+      const questions = { en: "What health concern would you like help with?", de: "Bei welchem gesundheitlichen Anliegen möchtest du Unterstützung?", ru: "С какой проблемой здоровья вам нужна помощь?" };
+      return { status: 200, body: { answer: questions[lang], model: geminiModel } };
+    }
     return {
       status: 200,
       body: {
@@ -204,6 +338,12 @@ async function createChatResponse(payload) {
     };
   }
 
+  // Free-form model text cannot be verified for product indications or eligibility.
+  // Use the existing fixed site/analytics fallback until structured validation is available.
+  return { status: 200, body: { answer: lang === "ru"
+    ? "Я могу помочь найти приложения в каталоге. Уточните, пожалуйста, какое состояние или вопрос вас интересует."
+    : buildFallbackAnswer(message, pageContext), model: geminiModel } };
+
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey || apiKey === "your_gemini_api_key_here") {
@@ -228,6 +368,14 @@ async function createChatResponse(payload) {
   }
 
   answer = cleanAssistantAnswer(answer, message);
+
+  // The model may explain site content, but must not invent catalogue entries or eligibility.
+  if (isProfileListRequest(message, history)) {
+    const candidates = selectRelevantProfiles(getDigaProfiles(), message);
+    answer = candidates.length
+      ? candidates.slice(0, 8).map((profile) => formatProfileAnswerItem(profile, isGermanQuestion(message))).join("\n")
+      : buildNoMatchingProfileAnswer(message, history);
+  }
 
   if (looksIncomplete(answer) || shouldUseConciseFallback(message, pageContext, answer)) {
     const fallback = buildFallbackAnswer(message, pageContext);
@@ -382,6 +530,9 @@ function isSiteRelevantQuestion(message, history = [], pageContext = "") {
   const question = normalizeSearchText(message);
   const context = normalizeSearchText(pageContext);
 
+  if (isSmokingRequest(message) || (/^(which ones|welche davon|welche)\??$/.test(question) && history.some((entry) => entry.role === "user" && isSmokingRequest(entry.content)))) return true;
+  if (/^(i want to stop this habit|i need help feeling better|i am tired all the time)[.!?]*$/.test(question)) return true;
+
   if (hasObviousOffTopicEntity(question) && !hasStrongSiteTopic(question) && !mentionsKnownProfile(question)) {
     return false;
   }
@@ -482,9 +633,17 @@ function mentionsKnownProfile(text) {
 }
 
 function isGermanQuestion(message) {
-  return /\b(wer|was|wie|wo|wohnt|welche|welcher|welches|gibt|ist|sind|kann|koennen|bitte|frage|fragen|analyse|krankenhaus|kosten|aufenthalt|entlassung|fuer|ueber|gehoert|nicht|worum|geht|seite|webseite|erzaehl)\b/i.test(
-    normalizeSearchText(message)
-  );
+  const text = normalizeSearchText(message);
+  if (/\b(answer|reply|respond) in english\b/.test(text)) return false;
+  if (/\b(auf deutsch|in german)\b/.test(text)) return true;
+  if (/\b(i|my|which|what|the|please|want|looking|apps)\b/.test(text)) return false;
+  return /\b(hallo|ich|moechte|rauchen|rauchstopp|rauchentwoehnung|zigarette|wer|was|wie|wo|welche|welcher|gibt|ist|sind|kann|bitte|nicht|krankenhaus|kosten|psychologische|unterstuetzung|sexuellen|bereich|schlafprobleme)\b/.test(text);
+}
+
+function isSmokingRequest(message) {
+  const text = normalizeSearchText(message);
+  return /\b(smok(?:e|ing|er|ers)|tobacco|cigarettes?|rauchen|rauchstopp|rauchentwoehnung|zigaretten?)\b/.test(text) &&
+    !/\b(do not smoke|don't smoke|nicht rauche|kein raucher)\b/.test(text);
 }
 
 function cleanAssistantAnswer(answer, message) {
@@ -722,6 +881,8 @@ function isCareAreaCorrection(question) {
 function shortProfileDescription(profile, isGerman = false) {
   if (isGerman) {
     const germanDescriptions = {
+      "NichtraucherHelden-App": "Programm zur Rauchentwöhnung bei diagnostizierter Tabakabhängigkeit.",
+      "Smoke Free - Rauchen aufhoeren": "Digitale Anwendung zur Rauchentwöhnung.",
       "glucura Diabetestherapie":
         "DiGA zur Therapie bei Typ-2-Diabetes mit personalisierten Ernaehrungs- und Lebensstilanpassungen.",
       "HelloBetter Diabetes":
@@ -764,6 +925,8 @@ function looksIncomplete(answer) {
 
 function getContextMode(topic) {
   const normalizedTopic = normalizeSearchText(topic);
+
+  if (/\bdiga\b/.test(normalizedTopic)) return "profiles";
 
   if (isAnalyticsQuestion(normalizedTopic)) {
     return "analytics";
@@ -832,10 +995,15 @@ function getDigaProfiles() {
 }
 
 function selectRelevantProfiles(profiles, topic) {
+  if (/\b(?:type|typ)[ -]?1\b/i.test(topic) && /diabet/i.test(topic)) return profiles.filter((p) => p.name === "HelloBetter Diabetes");
+  if (/\b(sleep|insomnia|schlaf|schlafen)\w*/i.test(topic)) return profiles.filter((p) => ["HelloBetter Schlafen", "somnio", "somnovia"].includes(p.name));
+  if (isSmokingRequest(topic)) {
+    return profiles.filter((profile) => ["NichtraucherHelden-App", "Smoke Free - Rauchen aufhoeren"].includes(profile.name));
+  }
   const queryTokens = getSearchTokens(topic);
 
   if (!queryTokens.length) {
-    return profiles;
+    return [];
   }
 
   const synonyms = {
@@ -854,7 +1022,7 @@ function selectRelevantProfiles(profiles, topic) {
   const searchableTokens = Array.from(expandedTokens).filter((token) => token.length > 2 && token !== "diga");
 
   if (!searchableTokens.length) {
-    return profiles;
+    return [];
   }
 
   const scored = profiles
@@ -961,8 +1129,7 @@ function normalizeSearchText(text) {
 
 function getKnowledgeContext(topic = "") {
   const contextMode = getContextMode(topic);
-  const cacheKey =
-    contextMode === "profiles" ? `${contextMode}:${getSearchTokens(topic).slice(0, 6).join(",")}` : contextMode;
+  const cacheKey = `${contextMode}:${topic}`;
 
   if (cachedKnowledge.has(cacheKey)) {
     return cachedKnowledge.get(cacheKey);

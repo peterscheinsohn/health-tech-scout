@@ -39,7 +39,7 @@
   };
 
   const initialMessage =
-    "Hi, I am the HealthTech Scout AI guide. I can help with DiGA, care areas, company profiles, and the Hospital Discharge Analytics project.";
+    "Hi! Ask me about DiGA, company profiles, or healthcare analytics.";
 
   const loadingSteps = [
     "Checking HealthTech Scout context",
@@ -61,6 +61,8 @@
   const launcher = document.createElement("button");
   launcher.className = "chat-launcher";
   launcher.type = "button";
+  launcher.setAttribute("aria-label", "Open HealthTech Scout AI chat");
+  launcher.title = "Open HealthTech Scout AI chat";
   launcher.setAttribute("aria-expanded", "false");
   launcher.setAttribute("aria-controls", "siteAssistantPanel");
   launcher.innerHTML = `
@@ -69,7 +71,7 @@
       <span aria-hidden="true">AI</span>
     </span>
     <span class="chat-launcher-copy">
-      <strong>HealthTech Scout AI</strong>
+      <strong>Chat</strong>
     </span>
   `;
 
@@ -114,7 +116,7 @@
       </div>
       <div class="chat-input-row">
         <label class="sr-only" for="siteAssistantInput">Message the HealthTech Scout AI guide</label>
-        <textarea id="siteAssistantInput" rows="2" placeholder="Ask about DiGA or the analytics dashboard"></textarea>
+        <textarea id="siteAssistantInput" rows="2" placeholder="Ask a question"></textarea>
         <button class="chat-mic" type="button" aria-label="Use microphone" title="Use microphone">
           <span class="chat-microphone" aria-hidden="true"><i></i><b></b></span>
         </button>
