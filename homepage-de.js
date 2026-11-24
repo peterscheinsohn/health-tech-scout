@@ -84,7 +84,8 @@
     "Eine DiGA für Typ-2-Diabetes, die durch Selbstmanagement und Lebensstiländerungen die Diabeteskontrolle verbessern soll. Sie bietet tägliche Aufgaben, automatische Nachrichten, Informationen und spielerische Ziele.",
     "Eine DiGA zur Behandlung unspezifischer Schmerzen im unteren Rücken oder Wirbelsäulenarthrose. Sie bietet tägliche, an Rückmeldungen angepasste Bewegungsübungen, Fortschrittsanzeigen, Bewegungstests und Informationen.",
     "Eine DiGA für Erwachsene mit schädlichem Alkoholkonsum oder Alkoholabhängigkeit. Sie soll mit verhaltenstherapeutischen Methoden ergänzend zur regulären Versorgung den Umgang mit dem Trinkverhalten unterstützen und den Konsum reduzieren.",
-    "Eine DiGA zur langfristigen Gewichtsreduktion durch Änderung von Bewegungs-, Ernährungs- und Verhaltensgewohnheiten. Sie setzt eine multimodale konservative Adipositastherapie digital um."
+    "Eine DiGA zur langfristigen Gewichtsreduktion durch Änderung von Bewegungs-, Ernährungs- und Verhaltensgewohnheiten. Sie setzt eine multimodale konservative Adipositastherapie digital um.",
+    "Eine DiGA für Erwachsene mit Schmerzen im unteren Rücken. Sie bietet einen individuell angepassten Trainingsplan mit Bewegungs-, Muskel- und Entspannungsübungen sowie Wissensinhalten."
   ];
 
   profiles.filter((p) => p.track === "DiGA").forEach((p, i) => { translations[p.description] = descriptions[i]; });

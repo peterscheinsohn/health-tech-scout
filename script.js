@@ -109,7 +109,7 @@ const profiles = [
   },
   {
     name: "glucura Diabetestherapie",
-    manufacturer: "Perfood GmbH",
+    manufacturer: "Perfood Laboratories GmbH",
     track: "DiGA",
     status: "Listed DiGA",
     lens: "Metabolic Care",
@@ -598,6 +598,20 @@ const profiles = [
     description:
       "A DiGA that helps patients reduce weight long term by changing habits around movement, nutrition, and behavior. It digitally implements multimodal conservative obesity therapy.",
     tags: ["Obesity", "Metabolic care"],
+  },
+  {
+    name: "eCovery - Therapie bei Schmerzen im unteren Rücken",
+    manufacturer: "eCovery GmbH",
+    track: "DiGA",
+    status: "Listed DiGA",
+    officialStatus: "Dauerhaft aufgenommen",
+    bfarmId: "02173",
+    bfarmUrl: "https://diga.bfarm.de/de/verzeichnis/02173",
+    indications: ["M42.16", "M42.17", "M42.96", "M42.97", "M54.06", "M54.07", "M54.16", "M54.17", "M54.3", "M54.4", "M54.5", "M54.86", "M54.87", "M54.96", "M54.97", "M99.03", "M99.83", "M99.93"],
+    lens: "Musculoskeletal",
+    source: "https://ecovery.de/therapie/ruecken-app-auf-rezept/",
+    description: "A DiGA for adults with lower back pain. It offers an individually adapted training plan with movement, muscle and relaxation exercises and educational content.",
+    tags: ["Back pain", "MSK"],
   },
   {
     name: "coobi",
